@@ -42,10 +42,10 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
             return;
         }
 
-        double scale = PolyNametagConfig.INSTANCE.getScale();
-        args.set(0, ((double) args.get(0)) * scale);
-        args.set(1, ((double) args.get(1)) * scale);
-        args.set(2, ((double) args.get(2)) * scale);
+        float scale = PolyNametagConfig.INSTANCE.getScale();
+        args.set(0, ((float) args.get(0)) * scale);
+        args.set(1, ((float) args.get(1)) * scale);
+        args.set(2, ((float) args.get(2)) * scale);
     }
 
     @Inject(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
