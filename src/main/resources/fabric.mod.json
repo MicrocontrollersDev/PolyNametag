@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "name": "${mod_name}",
+  "version": "${mod_version}",
+  "description": "",
+  "authors": [
+    "PolyFrost"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Polyfrost/PolyNametag",
+    "sources": "https://github.com/Polyfrost/PolyNametag",
+    "issues": "https://github.com/Polyfrost/PolyNametag/issues"
+  },
+  "entrypoints": {
+    "client": [
+      {
+        "value": "org.polyfrost.polynametag.PolyNametag"
+      }
+    ]
+  },
+  "mixins": [
+    "mixins.${mod_id}.json"
+  ],
+  "license": "GPL 3.0",
+  "environment": "client"
+}
