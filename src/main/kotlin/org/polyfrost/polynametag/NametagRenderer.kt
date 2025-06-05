@@ -14,6 +14,11 @@ import org.polyfrost.polyui.unit.Vec2
 import kotlin.math.cos
 import kotlin.math.sin
 
+//#if MC >= 1.17.1
+//$$ import com.mojang.blaze3d.vertex.PoseStack
+//$$ import net.minecraft.client.font.TextRenderer
+//#endif
+
 object NametagRenderer {
 
     private val points = arrayOf(Vec2(1f, 1f), Vec2(1f, -1f), Vec2(-1f, -1f), Vec2(-1f, 1f))
@@ -22,25 +27,50 @@ object NametagRenderer {
     var isDrawingIndicator = false
     private val essentialBSManager = EssentialBSManager()
 
+    // TODO: send the pose stack instead of guiGraphics
     @JvmStatic
-    fun drawNametagString(fontRenderer: FontRenderer, text: String, x: Float, y: Float, color: Int): Int {
+    fun drawNametagString(
+            //#if MC >= 1.17.1
+            //$$ poseStack: MatrixStack, fontRenderer: TextRenderer,
+            //#else
+            fontRenderer: FontRenderer,
+            //#endif
+            text: String, x: Float, y: Float, color: Int): Int {
         if (fontRenderer !is Accessor_FontRenderer_DrawString) {
             return 0
         }
 
+        //#if MC < 1.17.1
         GlStateManager.pushMatrix()
+        //#else
+        //$$ poseStack.push();
+        //#endif
         return when (PolyNametagConfig.textType) { //TODO FULL SHADOW
+            //#if MC < 1.17.1
             0 -> fontRenderer.invokeRenderString(text, x, y, color, false)
             1 -> fontRenderer.invokeRenderString(text, x, y, color, true)
+            //#endif
             else -> 0
         }.apply {
+            //#if MC < 1.17.1
             GlStateManager.popMatrix()
+            //#else
+            //$$ poseStack.pop();
+            //#endif
         }
     }
 
     @JvmStatic
-    fun drawNametagString(text: String, x: Float, y: Float, color: Int): Int {
+    fun drawNametagString(
+            //#if MC >= 1.17.1
+            //$$ poseStack: PoseStack,
+            //#endif
+            text: String, x: Float, y: Float, color: Int): Int {
+        //#if MC < 1.17.1
         return drawNametagString(mc.fontRendererObj, text, x, y, color)
+        //#else
+        //$$ return drawNametagString(poseStack, mc.textRenderer, text, x, y, color)
+        //#endif
     }
 
     @JvmStatic
@@ -88,7 +118,11 @@ object NametagRenderer {
 
     @JvmStatic
     fun drawBackground(entity: Entity) {
+        //#if MC < 1.17.1
         val halfWidth = mc.fontRendererObj.getStringWidth(entity.displayName.formattedText) / 2 + 1.0
+        //#else
+        //$$ val halfWidth = mc.textRenderer.getWidth(entity.name.asOrderedText()) / 2 + 1.0
+        //#endif
         drawBackground(-halfWidth, halfWidth, entity)
     }
 

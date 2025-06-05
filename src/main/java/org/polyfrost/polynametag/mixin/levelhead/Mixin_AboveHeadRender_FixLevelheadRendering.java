@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender", priority = 1001, remap = false)
 public abstract class Mixin_AboveHeadRender_FixLevelheadRendering {
 
+    //#if MC <= 1.12.2
     @Dynamic("Levelhead")
     @WrapOperation(
         method = "render(Lnet/minecraft/client/gui/FontRenderer;Lclub/sk1er/mods/levelhead/display/LevelheadTag$LevelheadComponent;I)V",
@@ -52,5 +53,6 @@ public abstract class Mixin_AboveHeadRender_FixLevelheadRendering {
 //        NametagRenderingKt.drawFrontBackground(-stringWidth - 2, stringWidth + 1, entityIn);
 //        GlStateManager.depthMask(true);
     }
+    //#endif
 
 }

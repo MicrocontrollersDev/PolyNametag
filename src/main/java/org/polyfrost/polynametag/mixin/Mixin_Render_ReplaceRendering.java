@@ -17,25 +17,72 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(Render.class)
+//#if MC > 1.17.1
+//$$ import com.mojang.blaze3d.vertex.PoseStack;
+//$$ import net.minecraft.client.renderer.MultiBufferSource;
+//$$ import net.minecraft.network.chat.Component;
+//$$ import net.minecraft.client.render.entity.EntityRenderer;
+//$$ import net.minecraft.client.render.entity.state.EntityRenderState;
+//$$ import net.minecraft.client.font.TextRenderer;
+//$$ import net.minecraft.client.util.math.MatrixStack;
+//$$ import com.llamalad7.mixinextras.sugar.Local;
+//$$ import org.joml.Matrix4f;
+//#endif
+
+
+@Mixin(
+    //#if MC < 1.17.1
+    Render.class
+    //#else
+    //$$ EntityRenderer.class
+    //#endif
+)
 public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
-    @WrapOperation(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"))
-    private int polynametag$switchTextRendering(FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
+    @WrapOperation(method = "renderLivingLabel", at = @At(value = "INVOKE", target =
+            //#if MC < 1.17.1
+            "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"
+            //#else
+            //$$ "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"
+            //#endif
+            )
+    )
+    private int polynametag$switchTextRendering(
+            //#if MC < 1.17.1
+            FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original
+            //#else
+            //$$ TextRenderer instance, Text text, float x, float y, int color, boolean shadow, Matrix4f matrix4f, VertexConsumerProvider vertexConsumerProvider, TextRenderer.TextLayerType textLayerType, int backgroundColor, int packedLight, Operation<Integer> original, @Local(ordinal = 0, argsOnly = true) MatrixStack matrixStack
+            //#endif
+    ) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+            //#if MC < 1.17.1
             return original.call(instance, text, x, y, color);
+            //#else
+            //$$ return original.call(instance, text, x, y, color, shadow, matrix4f, vertexConsumerProvider, textLayerType, backgroundColor, packedLight);
+            //#endif
         }
 
+        //#if MC < 1.17.1
         return NametagRenderer.drawNametagString(instance, text, x, y, color);
+        //#else
+        //$$ return NametagRenderer.drawNametagString(matrixStack, instance, text.getString(), x, y, color);
+        //#endif
     }
 
     @Inject(method = "renderLivingLabel", at = @At("HEAD"), cancellable = true)
-    private void polynametag$checkInventory(T entity, String str, double x, double y, double z, int maxDistance, CallbackInfo ci) {
+    private void polynametag$checkInventory(
+            //#if MC < 1.17.1
+            T entity, String str, double x, double y, double z, int maxDistance, CallbackInfo ci
+            //#else
+            //$$ EntityRenderState entityRenderState, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci
+            //#endif
+    ) {
         if (PolyNametagConfig.INSTANCE.getEnabled() && !PolyNametagConfig.INSTANCE.getShowInInventory() && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
             ci.cancel();
         }
     }
 
+    //#if MC < 1.17.1
     @ModifyArgs(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;scale(FFF)V"))
     private void polyNametag$changeScale(Args args) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
@@ -47,7 +94,31 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
         args.set(1, ((float) args.get(1)) * scale);
         args.set(2, ((float) args.get(2)) * scale);
     }
+    //#else
+    //$$ @Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/OrderedText;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
+    //$$ public void polyNametag$changeScale(T entity, Component displayName, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float partialTicks, CallbackInfo ci) {
+    //$$     float scale = PolyNametagConfig.INSTANCE.getScale();
+    //$$     poseStack.scale(scale, scale, scale);
+    //$$ }
+    //#endif
 
+    @ModifyArg(method = "renderLivingLabel", at = @At(value = "INVOKE",
+            //#if MC < 1.17.1
+            target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V", ordinal = 0), index = 1
+            //#else
+            //$$ target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/OrderedText;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"), index = 2
+            //#endif
+    )
+    private float polynametag$modifyTranslateY(float y) {
+        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+            return y;
+        }
+
+        return y + PolyNametagConfig.INSTANCE.getHeightOffset();
+    }
+
+    // TODO: figure out what this stuff does
+    //#if MC < 1.17.1
     @Inject(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
     private void polynametag$replaceDefaultBackgroundRendering(T entity, String str, double x, double y, double z, int maxDistance, CallbackInfo ci) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
@@ -101,14 +172,6 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
         instance.draw();
     }
-
-    @ModifyArg(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V", ordinal = 0), index = 1)
-    private float polynametag$modifyTranslateY(float y) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
-            return y;
-        }
-
-        return y + PolyNametagConfig.INSTANCE.getHeightOffset();
-    }
+    //#endif
 
 }

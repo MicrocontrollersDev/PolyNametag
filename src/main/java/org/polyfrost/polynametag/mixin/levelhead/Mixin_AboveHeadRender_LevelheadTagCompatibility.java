@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender", priority = 1001, remap = false)
 public class Mixin_AboveHeadRender_LevelheadTagCompatibility {
 
+    //#if MC <= 1.12.2
     @Dynamic("LevelHead")
     @Redirect(
             method = "render(Lnet/minecraftforge/client/event/RenderLivingEvent$Specials$Post;)V",
@@ -30,5 +31,6 @@ public class Mixin_AboveHeadRender_LevelheadTagCompatibility {
     private boolean polynametag$modifySelfChecks(@Coerce Object instance, EntityPlayer player) {
         return !(PolyNametagConfig.INSTANCE.getEnabled() && PolyNametagConfig.INSTANCE.getShowOwnNametag()) && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.getUniqueID().equals(player.getUniqueID());
     }
+    //#endif
 
 }
