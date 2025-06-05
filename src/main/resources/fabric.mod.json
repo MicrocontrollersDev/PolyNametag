@@ -15,6 +15,7 @@
   "entrypoints": {
     "client": [
       {
+        "adapter": "kotlin",
         "value": "org.polyfrost.polynametag.PolyNametag"
       }
     ]
