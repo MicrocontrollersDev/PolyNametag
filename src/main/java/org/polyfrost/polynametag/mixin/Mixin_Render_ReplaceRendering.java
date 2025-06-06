@@ -121,7 +121,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
         return y + PolyNametagConfig.INSTANCE.getHeightOffset() * scale;
     }
 
-    // TODO: figure out what this stuff does
+    // TODO: 1.8 does all the rendering in this class, but in modern textRenderer handles all of this. we will need to create a custom textRenderer.draw
     //#if MC < 1.17.1
     @Inject(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
     private void polynametag$replaceDefaultBackgroundRendering(T entity, String str, double x, double y, double z, int maxDistance, CallbackInfo ci) {
