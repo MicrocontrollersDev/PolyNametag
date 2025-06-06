@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 //#if MC > 1.17.1
-//$$ import com.mojang.blaze3d.vertex.PoseStack;
 //$$ import net.minecraft.client.renderer.MultiBufferSource;
 //$$ import net.minecraft.network.chat.Component;
 //$$ import net.minecraft.client.render.entity.EntityRenderer;
@@ -43,7 +42,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
             //#if MC < 1.17.1
             "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"
             //#else
-            //$$ "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"
+            //$$ "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"
             //#endif
             )
     )
@@ -65,7 +64,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
         //#if MC < 1.17.1
         return NametagRenderer.drawNametagString(instance, text, x, y, color);
         //#else
-        //$$ return NametagRenderer.drawNametagString(matrixStack, instance, text.getString(), x, y, color);
+        //$$ return NametagRenderer.drawNametagString(matrixStack, instance, matrix4f, vertexConsumerProvider, textLayerType, backgroundColor, packedLight, text.getString(), x, y, color);
         //#endif
     }
 
@@ -95,10 +94,11 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
         args.set(2, ((float) args.get(2)) * scale);
     }
     //#else
-    //$$ @Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/OrderedText;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
-    //$$ public void polyNametag$changeScale(T entity, Component displayName, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float partialTicks, CallbackInfo ci) {
-    //$$     float scale = PolyNametagConfig.INSTANCE.getScale();
-    //$$     poseStack.scale(scale, scale, scale);
+    //$$ @Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
+    //$$ public <S extends EntityRenderState> void polyNametag$changeScale(S entityRenderState, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+    //$$     // float scale = PolyNametagConfig.INSTANCE.getScale();
+    //$$     float scale = 0.5f;
+    //$$     matrixStack.scale(scale, scale, scale);
     //$$ }
     //#endif
 
@@ -106,15 +106,19 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
             //#if MC < 1.17.1
             target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V", ordinal = 0), index = 1
             //#else
-            //$$ target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/OrderedText;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"), index = 2
+            //$$ target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"), index = 2
             //#endif
     )
     private float polynametag$modifyTranslateY(float y) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
             return y;
         }
-
-        return y + PolyNametagConfig.INSTANCE.getHeightOffset();
+        //#if MC < 1.17.1
+        float scale = 1f;
+        //#else
+        //$$ float scale = -100f; // randomly chosen value. the old config values barely move the nametag at all
+        //#endif
+        return y + PolyNametagConfig.INSTANCE.getHeightOffset() * scale;
     }
 
     // TODO: figure out what this stuff does

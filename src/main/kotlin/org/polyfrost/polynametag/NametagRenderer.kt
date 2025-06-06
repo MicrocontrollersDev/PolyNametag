@@ -15,8 +15,10 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 //#if MC >= 1.17.1
-//$$ import com.mojang.blaze3d.vertex.PoseStack
+//$$ import net.minecraft.client.util.math.MatrixStack
 //$$ import net.minecraft.client.font.TextRenderer
+//$$ import net.minecraft.client.render.VertexConsumerProvider
+//$$ import org.joml.Matrix4f
 //#endif
 
 object NametagRenderer {
@@ -31,47 +33,45 @@ object NametagRenderer {
     @JvmStatic
     fun drawNametagString(
             //#if MC >= 1.17.1
-            //$$ poseStack: MatrixStack, fontRenderer: TextRenderer,
+            //$$ matrixStack: MatrixStack, fontRenderer: TextRenderer, matrix4f: Matrix4f, vertexConsumerProvider: VertexConsumerProvider, textLayerType: TextRenderer.TextLayerType, backgroundColor: Int, packedLight: Int,
             //#else
             fontRenderer: FontRenderer,
             //#endif
             text: String, x: Float, y: Float, color: Int): Int {
+        //#if MC < 1.17.1
         if (fontRenderer !is Accessor_FontRenderer_DrawString) {
             return 0
         }
+        //#endif
 
         //#if MC < 1.17.1
         GlStateManager.pushMatrix()
         //#else
-        //$$ poseStack.push();
+        //$$ matrixStack.push();
         //#endif
         return when (PolyNametagConfig.textType) { //TODO FULL SHADOW
             //#if MC < 1.17.1
             0 -> fontRenderer.invokeRenderString(text, x, y, color, false)
             1 -> fontRenderer.invokeRenderString(text, x, y, color, true)
+            //#else
+            //$$ 0 -> fontRenderer.draw(text, x, y, color, false, matrix4f, vertexConsumerProvider, textLayerType, backgroundColor, packedLight);
+            //$$ 1 -> fontRenderer.draw(text, x, y, color, true, matrix4f, vertexConsumerProvider, textLayerType, backgroundColor, packedLight);
             //#endif
             else -> 0
         }.apply {
             //#if MC < 1.17.1
             GlStateManager.popMatrix()
             //#else
-            //$$ poseStack.pop();
+            //$$ matrixStack.pop();
             //#endif
         }
     }
 
-    @JvmStatic
-    fun drawNametagString(
-            //#if MC >= 1.17.1
-            //$$ poseStack: PoseStack,
-            //#endif
-            text: String, x: Float, y: Float, color: Int): Int {
-        //#if MC < 1.17.1
-        return drawNametagString(mc.fontRendererObj, text, x, y, color)
-        //#else
-        //$$ return drawNametagString(poseStack, mc.textRenderer, text, x, y, color)
-        //#endif
-    }
+    // what is the point of this method
+//    @JvmStatic
+//    fun drawNametagString(text: String, x: Float, y: Float, color: Int): Int {
+//        return drawNametagString(mc.fontRendererObj, text, x, y, color)
+//    }
 
     @JvmStatic
     fun drawBackground(x1: Double, x2: Double, entity: Entity) {

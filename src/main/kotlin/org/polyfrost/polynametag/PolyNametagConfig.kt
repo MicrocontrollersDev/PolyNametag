@@ -21,7 +21,7 @@ object PolyNametagConfig : Config("nametag.json", "/polynametag.svg", PolyNameta
         get() = field.coerceIn(-0.5f, 0.5f)
 
     @Slider(title = "Scale", min = 0f, max = 1f, description = "How much to scale the nametag")
-    var scale = 0.7f // hardcoded for testing since sliders don't work?
+    var scale = 0.3f // hardcoded for testing since sliders don't work?
         get() = field.coerceIn(0f, 1f)
 
     @Switch(title = "Rounded Corners")
