@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import org.polyfrost.polynametag.NametagRenderer;
 import org.polyfrost.polynametag.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -26,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 //$$ import net.minecraft.client.util.math.MatrixStack;
 //$$ import com.llamalad7.mixinextras.sugar.Local;
 //$$ import org.joml.Matrix4f;
+//$$ import net.minecraft.client.option.GameOptions;
 //#endif
 
 
@@ -97,7 +99,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
     //$$ @Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
     //$$ public <S extends EntityRenderState> void polyNametag$changeScale(S entityRenderState, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
     //$$     // float scale = PolyNametagConfig.INSTANCE.getScale();
-    //$$     float scale = 0.5f;
+    //$$     float scale = 1f; // temp
     //$$     matrixStack.scale(scale, scale, scale);
     //$$ }
     //#endif
@@ -122,7 +124,27 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
     }
 
     // TODO: 1.8 does all the rendering in this class, but in modern textRenderer handles all of this. we will need to create a custom textRenderer.draw
-    //#if MC < 1.17.1
+    // or potential idea, we can set background to 0 opacity and instead re-render? see BakedGlyph.drawRectange
+
+    //#if MC >= 1.17.1
+    //$$ @Unique
+    //$$ private Entity entity;
+    //$$
+    //$$ @Inject(method = "updateRenderState", at = @At("TAIL"))
+    //$$ private void updateRenderState(Entity entityMixin, EntityRenderState entityRenderState, float f, CallbackInfo ci) {
+    //$$     this.entity = entityMixin;
+    //$$ }
+    //$$
+    //$$ @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getTextBackgroundOpacity(F)F"))
+    //$$ private float polynametag$removeBackground(GameOptions instance, float v, Operation<Float> original) {
+    //$$     return 0f;
+    //$$ }
+    //$$
+    //$$ @Inject(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"))
+    //$$ private void polynametag$replaceBackground(EntityRenderState entityRenderState, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+    //$$     NametagRenderer.drawBackground(entity, matrixStack);
+    //$$ }
+    //#elseif MC < 1.17.1
     @Inject(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
     private void polynametag$replaceDefaultBackgroundRendering(T entity, String str, double x, double y, double z, int maxDistance, CallbackInfo ci) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
