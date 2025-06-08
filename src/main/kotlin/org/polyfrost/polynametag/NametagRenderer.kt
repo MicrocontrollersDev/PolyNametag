@@ -125,7 +125,7 @@ object NametagRenderer {
             GL11.glColor4f(r / 255f, g / 255f, b / 255f, a.coerceAtMost(63) / 255f)
         }
         //#else
-        //$$ val buffer = OmniBufferBuilder.create(DrawModes.LINES, VertexFormats.POSITION_COLOR)
+        //$$ val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_COLOR)
         //#endif
 
         val halfWidth = (x2 - realX1) / 2f + PolyNametagConfig.paddingX.coerceIn(0f, 10f)
