@@ -99,7 +99,6 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
     //$$ @Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
     //$$ public <S extends EntityRenderState> void polyNametag$changeScale(S entityRenderState, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
     //$$     // float scale = PolyNametagConfig.INSTANCE.getScale();
-    //$$     float scale = 1f; // temp
     //$$     matrixStack.scale(scale, scale, scale);
     //$$ }
     //#endif
@@ -122,9 +121,6 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
         //#endif
         return y + PolyNametagConfig.INSTANCE.getHeightOffset() * scale;
     }
-
-    // TODO: 1.8 does all the rendering in this class, but in modern textRenderer handles all of this. we will need to create a custom textRenderer.draw
-    // or potential idea, we can set background to 0 opacity and instead re-render? see BakedGlyph.drawRectange
 
     //#if MC >= 1.17.1
     //$$ @Unique

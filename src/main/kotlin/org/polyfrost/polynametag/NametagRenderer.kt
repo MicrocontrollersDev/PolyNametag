@@ -39,7 +39,6 @@ object NametagRenderer {
     var isDrawingIndicator = false
     private val essentialBSManager = EssentialBSManager()
 
-    // TODO: send the pose stack instead of guiGraphics
     @JvmStatic
     fun drawNametagString(
             //#if MC >= 1.17.1
@@ -76,12 +75,6 @@ object NametagRenderer {
             //#endif
         }
     }
-
-    // what is the point of this method
-//    @JvmStatic
-//    fun drawNametagString(text: String, x: Float, y: Float, color: Int): Int {
-//        return drawNametagString(mc.fontRendererObj, text, x, y, color)
-//    }
 
     private val PIPELINE by lazy {
         OmniRenderPipeline.builderWithDefaultShader(
