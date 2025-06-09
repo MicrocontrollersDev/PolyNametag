@@ -17,11 +17,11 @@ object PolyNametagConfig : Config("nametag.json", "/polynametag.svg", PolyNameta
     var enabled = true
 
     @Slider(title = "Height offset", min = -0.5f, max = 0.5f, description = "How much to offset the nametag vertically")
-    var heightOffset = 0f
+    var heightOffset = 0f // TODO: fix sliders in oneconfig
         get() = field.coerceIn(-0.5f, 0.5f)
 
     @Slider(title = "Scale", min = 0f, max = 1f, description = "How much to scale the nametag")
-    var scale = 1f
+    var scale = 1f // TODO: fix sliders in oneconfig
         get() = field.coerceIn(0f, 1f)
 
     @Switch(title = "Rounded Corners")

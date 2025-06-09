@@ -10,6 +10,7 @@ import dev.deftu.omnicore.client.render.state.BlendFunction
 import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.state.OmniManagedDepthState
 import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
+import dev.deftu.omnicore.common.OmniColor
 import dev.deftu.omnicore.common.OmniIdentifier
 import gg.essential.universal.UMatrixStack
 import net.minecraft.client.entity.AbstractClientPlayer
@@ -38,6 +39,13 @@ object NametagRenderer {
 
     var isDrawingIndicator = false
     private val essentialBSManager = EssentialBSManager()
+
+    //#if MC < 1.17.1
+    @JvmStatic
+    fun drawNametagString(text: String, x: Float, y: Float, color: Int): Int {
+        return drawNametagString(mc.fontRendererObj, text, x, y, color)
+    }
+    //#endif
 
     @JvmStatic
     fun drawNametagString(
@@ -95,37 +103,28 @@ object NametagRenderer {
         if (!PolyNametagConfig.background) {
             return
         }
-        //#if MC >= 1.17.1
+        //#if MC < 1.17.1
+        val stack = OmniMatrixStack()
+        //#else
         //$$ val stack = OmniMatrixStack(matrixStack)
         //#endif
 
-        //#if MC < 1.17.1
-        GL11.glEnable(GL11.GL_LINE_SMOOTH)
-        OmniRenderState.disableTexture2D()
-        GL11.glPushMatrix()
-        //#else
-        //$$ stack.push();
-        //#endif
+        stack.push()
         val realX1 = x1 - if (canDrawEssentialIndicator(entity)) 10 else 0
-        //#if MC < 1.17.1
-        GL11.glTranslated((realX1 + x2) / 2f, 3.5, 0.0)
-        //#else
-        //$$ stack.translate((realX1 + x2) / 2f, 3.5, 0.0)
-        //#endif
-        //#if MC < 1.17.1
-        GL11.glBegin(GL11.GL_TRIANGLE_FAN)
-        with(PolyNametagConfig.backgroundColor) {
-            GL11.glColor4f(r / 255f, g / 255f, b / 255f, a.coerceAtMost(63) / 255f)
-        }
-        //#else
-        //$$ val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_COLOR)
-        //#endif
+        stack.translate((realX1 + x2) / 2f, 3.5, 0.0)
+
+        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_COLOR)
 
         val halfWidth = (x2 - realX1) / 2f + PolyNametagConfig.paddingX.coerceIn(0f, 10f)
         val radius = if (PolyNametagConfig.rounded) PolyNametagConfig.cornerRadius.coerceIn(0f, 10f).coerceAtMost(4.5f + PolyNametagConfig.paddingY.coerceIn(0f, 10f)).coerceAtMost(halfWidth.toFloat()) else 0f
         val width = halfWidth - radius
         val distanceFromPlayer = entity.getDistanceToEntity(mc.thePlayer)
         val quality = ((distanceFromPlayer * 4 + 10).coerceAtMost(350f) / 4f).toInt()
+        val color: Int
+        with(PolyNametagConfig.backgroundColor) {
+            color = OmniColor.Rgba.getRgba(r, g, b, a.coerceAtMost(63))
+        }
+
         for (a in 0..3) {
             val (transX, transY) = translate[a]
             val (pointX, pointY) = points[a]
@@ -134,37 +133,21 @@ object NametagRenderer {
             if (PolyNametagConfig.rounded) {
                 for (b in 0 until 90 / quality) {
                     val angle = Math.toRadians((a * 90 + b * quality).toDouble())
-                    //#if MC < 1.17.1
-                    GL11.glVertex2d(x + sin(angle) * radius, y + cos(angle) * radius)
-                    //#else
-                    //$$ buffer
-                    //$$     .vertex(stack, (x + sin(angle) * radius).toDouble(), (y + cos(angle) * radius).toDouble(), 0.0)
-                    //$$     .color(PolyNametagConfig.backgroundColor.rgba)
-                    //$$ .next()
-                    //#endif
+                    buffer
+                        .vertex(stack, (x + sin(angle) * radius).toDouble(), (y + cos(angle) * radius).toDouble(), 0.0)
+                        .color(color)
+                    .next()
                 }
             } else {
-                //#if MC < 1.17.1
-                GL11.glVertex2d(x, y)
-                //#else
-                //$$ buffer
-                //$$     .vertex(stack, x.toDouble(), y.toDouble(), 0.0)
-                //$$     .color(PolyNametagConfig.backgroundColor.rgba)
-                //$$    .next()
-                //#endif
+                buffer
+                    .vertex(stack, x.toDouble(), y.toDouble(), 0.0)
+                    .color(color)
+                .next()
             }
         }
 
-        //#if MC < 1.17.1
-        GL11.glEnd()
-        GL11.glPopMatrix()
-        OmniRenderState.enableTexture2D()
-        GL11.glColor4f(1f, 1f, 1f, 1f)
-        GL11.glDisable(GL11.GL_LINE_SMOOTH)
-        //#else
-        //$$ buffer.build()?.drawWithCleanup(PIPELINE)
-        //$$ stack.pop();
-        //#endif
+        buffer.build()?.drawWithCleanup(PIPELINE)
+        stack.pop();
     }
 
     @JvmStatic

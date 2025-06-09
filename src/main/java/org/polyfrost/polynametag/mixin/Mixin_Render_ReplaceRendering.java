@@ -98,7 +98,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
     //#else
     //$$ @Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
     //$$ public <S extends EntityRenderState> void polyNametag$changeScale(S entityRenderState, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
-    //$$     // float scale = PolyNametagConfig.INSTANCE.getScale();
+    //$$     float scale = PolyNametagConfig.INSTANCE.getScale();
     //$$     matrixStack.scale(scale, scale, scale);
     //$$ }
     //#endif
