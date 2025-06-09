@@ -6,9 +6,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(FontRenderer.class)
 public interface Accessor_FontRenderer_DrawString {
-// unused?
-//    @Invoker
-//    void invokeResetStyles();
 
     //#if MC < 1.17.1
     @Invoker
