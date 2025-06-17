@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 @Mixin(RendererLivingEntity.class)
 public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingBase> {
 
-    //#if MC < 1.17.1
+    //#if MC < 1.16.5
     @WrapOperation(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"))
     private int polynametag$switchTextRendering(FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {

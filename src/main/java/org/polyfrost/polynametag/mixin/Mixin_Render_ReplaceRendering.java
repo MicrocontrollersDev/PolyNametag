@@ -18,30 +18,34 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-//#if MC > 1.17.1
-//$$ import net.minecraft.client.renderer.MultiBufferSource;
-//$$ import net.minecraft.network.chat.Component;
+//#if MC >= 1.21.2
+//$$ import net.minecraft.client.render.VertexConsumerProvider;
+//$$ import net.minecraft.text.Text;
 //$$ import net.minecraft.client.render.entity.EntityRenderer;
 //$$ import net.minecraft.client.render.entity.state.EntityRenderState;
 //$$ import net.minecraft.client.font.TextRenderer;
 //$$ import net.minecraft.client.util.math.MatrixStack;
 //$$ import com.llamalad7.mixinextras.sugar.Local;
-//$$ import org.joml.Matrix4f;
 //$$ import net.minecraft.client.option.GameOptions;
+//$$ import org.joml.Matrix4f;
+//$$ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 //#endif
 
 
 @Mixin(
-    //#if MC < 1.17.1
+    //#if MC < 1.16.5
     Render.class
-    //#else
+    //#elseif MC >= 1.21.2
     //$$ EntityRenderer.class
+    //#else
+    //$$ MinecraftClient.class
     //#endif
 )
 public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
+    //#if MC < 1.16.5 || MC >= 1.21.2
     @WrapOperation(method = "renderLivingLabel", at = @At(value = "INVOKE", target =
-            //#if MC < 1.17.1
+            //#if MC < 1.16.5
             "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"
             //#else
             //$$ "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"
@@ -49,21 +53,21 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
             )
     )
     private int polynametag$switchTextRendering(
-            //#if MC < 1.17.1
+            //#if MC < 1.16.5
             FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original
             //#else
             //$$ TextRenderer instance, Text text, float x, float y, int color, boolean shadow, Matrix4f matrix4f, VertexConsumerProvider vertexConsumerProvider, TextRenderer.TextLayerType textLayerType, int backgroundColor, int packedLight, Operation<Integer> original, @Local(ordinal = 0, argsOnly = true) MatrixStack matrixStack
             //#endif
     ) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
-            //#if MC < 1.17.1
+            //#if MC < 1.16.5
             return original.call(instance, text, x, y, color);
             //#else
             //$$ return original.call(instance, text, x, y, color, shadow, matrix4f, vertexConsumerProvider, textLayerType, backgroundColor, packedLight);
             //#endif
         }
 
-        //#if MC < 1.17.1
+        //#if MC < 1.16.5
         return NametagRenderer.drawNametagString(instance, text, x, y, color);
         //#else
         //$$ return NametagRenderer.drawNametagString(matrixStack, instance, matrix4f, vertexConsumerProvider, textLayerType, backgroundColor, packedLight, text.getString(), x, y, color);
@@ -72,18 +76,24 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
     @Inject(method = "renderLivingLabel", at = @At("HEAD"), cancellable = true)
     private void polynametag$checkInventory(
-            //#if MC < 1.17.1
+            //#if MC < 1.16.5
             T entity, String str, double x, double y, double z, int maxDistance, CallbackInfo ci
             //#else
             //$$ EntityRenderState entityRenderState, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci
             //#endif
     ) {
-        if (PolyNametagConfig.INSTANCE.getEnabled() && !PolyNametagConfig.INSTANCE.getShowInInventory() && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
+        if (PolyNametagConfig.INSTANCE.getEnabled() && !PolyNametagConfig.INSTANCE.getShowInInventory() && Minecraft.getMinecraft().currentScreen instanceof
+                //#if MC < 1.16.5
+                GuiInventory
+                //#else
+                //$$ InventoryScreen
+                //#endif
+        ) {
             ci.cancel();
         }
     }
 
-    //#if MC < 1.17.1
+    //#if MC < 1.16.5
     @ModifyArgs(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;scale(FFF)V"))
     private void polyNametag$changeScale(Args args) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
@@ -104,7 +114,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
     //#endif
 
     @ModifyArg(method = "renderLivingLabel", at = @At(value = "INVOKE",
-            //#if MC < 1.17.1
+            //#if MC < 1.16.5
             target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V", ordinal = 0), index = 1
             //#else
             //$$ target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"), index = 2
@@ -114,15 +124,15 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
             return y;
         }
-        //#if MC < 1.17.1
+        //#if MC < 1.16.5
         float scale = 1f;
         //#else
-        //$$ float scale = -100f; // randomly chosen value. the old config values barely move the nametag at all
+        //$$ float scale = -100f; // TODO: 100 seemed reasonably sound in testing, may not be exact. difficult/annoying to test without sliders working
         //#endif
         return y + PolyNametagConfig.INSTANCE.getHeightOffset() * scale;
     }
 
-    //#if MC >= 1.17.1
+    //#if MC >= 1.21.2
     //$$ @Unique
     //$$ private Entity entity;
     //$$
@@ -194,6 +204,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
         instance.draw();
     }
+    //#endif
     //#endif
 
 }

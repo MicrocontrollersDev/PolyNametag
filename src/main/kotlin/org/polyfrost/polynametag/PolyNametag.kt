@@ -1,17 +1,23 @@
 package org.polyfrost.polynametag
 
-//#if FORGE
+//#if FORGE && MC < 1.16.5
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
-//#else
+//#elseif NEOFORGE
+//$$ import net.neoforged.fml.ModLoadingContext
+//$$ import net.neoforged.fml.common.Mod
+//$$ import net.neoforged.neoforge.client.gui.IConfigScreenFactory
+//#elseif FABRIC
 //$$ import net.fabricmc.api.ClientModInitializer
 //#endif
 
 import dev.deftu.omnicore.common.OmniLoader
 
-//#if FORGE
+//#if FORGE && MC < 1.16.5
 @Mod(modid = PolyNametag.ID, version = PolyNametag.VERSION, name = PolyNametag.NAME, modLanguageAdapter = "org.polyfrost.oneconfig.utils.v1.forge.KotlinLanguageAdapter")
+//#elseif NEOFORGE
+//$$ @Mod(value = PolyNametag.ID)
 //#endif
 object PolyNametag
     //#if FABRIC
@@ -37,7 +43,7 @@ object PolyNametag
         isPatcher = OmniLoader.isModLoaded("patcher")
     }
 
-    //#if FORGE
+    //#if FORGE && MC < 1.16.5
     @Mod.EventHandler
     fun onInit(event: FMLInitializationEvent) {
         initialize()
@@ -47,8 +53,13 @@ object PolyNametag
     fun onPostInit(event: FMLPostInitializationEvent) {
         postInitialize()
     }
-    //#else
+    //#elseif FABRIC
     //$$ override fun onInitializeClient() {
+    //$$     initialize()
+    //$$     postInitialize()
+    //$$ }
+    //#elseif NEOFORGE
+    //$$ fun PolyNametag() {
     //$$     initialize()
     //$$     postInitialize()
     //$$ }

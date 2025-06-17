@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 @Mixin(targets = "gg.essential.handlers.OnlineIndicator")
 public class Mixin_OnlineIndicator_EssentialIndicatorCompatibility {
 
+    //#if MC <= 1.12.2
     @Dynamic("Essential")
     @ModifyArgs(
         method = "drawNametagIndicator",
@@ -43,5 +44,6 @@ public class Mixin_OnlineIndicator_EssentialIndicatorCompatibility {
 
         ci.cancel();
     }
+    //#endif
 
 }

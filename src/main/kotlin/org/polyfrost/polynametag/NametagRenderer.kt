@@ -25,14 +25,19 @@ import org.polyfrost.polyui.unit.Vec2
 import kotlin.math.cos
 import kotlin.math.sin
 
-//#if MC >= 1.17.1
+//#if MC >= 1.16.5
 //$$ import net.minecraft.client.util.math.MatrixStack
 //$$ import net.minecraft.client.font.TextRenderer
 //$$ import net.minecraft.client.render.VertexConsumerProvider
+//#if MC >= 1.19.4
 //$$ import org.joml.Matrix4f
+//#else
+//$$ import net.minecraft.util.math.Matrix4f
+//#endif
 //#endif
 
 object NametagRenderer {
+    //#if MC < 1.16.5 || MC >= 1.21.2
 
     private val points = arrayOf(Vec2(1f, 1f), Vec2(1f, -1f), Vec2(-1f, -1f), Vec2(-1f, 1f))
     private val translate = arrayOf(Vec2(1f, 0f), Vec2(0f, -1f), Vec2(-1f, 0f), Vec2(0f, 1f))
@@ -40,7 +45,7 @@ object NametagRenderer {
     var isDrawingIndicator = false
     private val essentialBSManager = EssentialBSManager()
 
-    //#if MC < 1.17.1
+    //#if MC < 1.16.5
     @JvmStatic
     fun drawNametagString(text: String, x: Float, y: Float, color: Int): Int {
         return drawNametagString(mc.fontRendererObj, text, x, y, color)
@@ -55,19 +60,22 @@ object NametagRenderer {
             fontRenderer: FontRenderer,
             //#endif
             text: String, x: Float, y: Float, color: Int): Int {
-        //#if MC < 1.17.1
+
+        //#if MC < 1.16.5 && MC >= 1.21.1
+
+        //#if MC < 1.16.5
         if (fontRenderer !is Accessor_FontRenderer_DrawString) {
             return 0
         }
         //#endif
 
-        //#if MC < 1.17.1
+        //#if MC < 1.16.5
         GlStateManager.pushMatrix()
         //#else
         //$$ matrixStack.push();
         //#endif
-        return when (PolyNametagConfig.textType) { //TODO FULL SHADOW
-            //#if MC < 1.17.1
+        return when (PolyNametagConfig.textType) { // TODO: FULL SHADOW
+            //#if MC < 1.16.5
             0 -> fontRenderer.invokeRenderString(text, x, y, color, false)
             1 -> fontRenderer.invokeRenderString(text, x, y, color, true)
             //#else
@@ -76,12 +84,15 @@ object NametagRenderer {
             //#endif
             else -> 0
         }.apply {
-            //#if MC < 1.17.1
+            //#if MC < 1.16.5
             GlStateManager.popMatrix()
             //#else
             //$$ matrixStack.pop();
             //#endif
         }
+        //#else
+        //$$ return 0
+        //#endif
     }
 
     private val PIPELINE by lazy {
@@ -96,14 +107,14 @@ object NametagRenderer {
 
     @JvmStatic
     fun drawBackground(x1: Double, x2: Double, entity: Entity
-    //#if MC >= 1.17.1
+    //#if MC >= 1.16.5
     //$$ , matrixStack: MatrixStack
     //#endif
     ) {
         if (!PolyNametagConfig.background) {
             return
         }
-        //#if MC < 1.17.1
+        //#if MC < 1.16.5
         val stack = OmniMatrixStack()
         //#else
         //$$ val stack = OmniMatrixStack(matrixStack)
@@ -152,16 +163,16 @@ object NametagRenderer {
 
     @JvmStatic
     fun drawBackground(entity: Entity
-        //#if MC >= 1.17.1
+        //#if MC >= 1.16.5
         //$$ , matrixStack: MatrixStack
         //#endif
     ) {
-        //#if MC < 1.17.1
+        //#if MC < 1.16.5
         val halfWidth = mc.fontRendererObj.getStringWidth(entity.displayName.formattedText) / 2 + 1.0
         //#else
         //$$ val halfWidth = mc.textRenderer.getWidth(entity.name.asOrderedText()) / 2 + 1.0
         //#endif
-        //#if MC < 1.17.1
+        //#if MC < 1.16.5
         drawBackground(-halfWidth, halfWidth, entity)
         //#else
         //$$ drawBackground(-halfWidth, halfWidth, entity, matrixStack)
@@ -179,5 +190,6 @@ object NametagRenderer {
     fun canDrawEssentialIndicator(entity: Entity): Boolean {
         return essentialBSManager.canDrawIndicator(entity)
     }
+    //#endif
 
 }

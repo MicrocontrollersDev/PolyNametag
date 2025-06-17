@@ -11,11 +11,11 @@ preprocess {
     // }
 
     "1.21.5-fabric"(12105, "yarn") {
-        "1.21.5-neoforge"(12105, "srg") {
-            "1.21.4-neoforge"(12104, "srg") {
+        "1.21.5-neoforge"(12105, "srg", file("versions/neo-fabric.txt")) {
+            "1.21.4-neoforge"(12104, "srg", file("versions/neo-fabric.txt")) {
                 "1.21.4-fabric"(12104, "yarn") {
                     "1.21.3-fabric"(12103, "yarn") {
-                        "1.21.3-neoforge"(12103, "srg") {
+                        "1.21.3-neoforge"(12103, "srg", file("versions/neo-fabric.txt")) {
                             "1.21.2-neoforge"(12102, "srg") {
                                 "1.21.2-fabric"(12102, "yarn") {
                                     "1.21.1-fabric"(12101, "yarn") {
