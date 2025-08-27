@@ -1,14 +1,15 @@
-package org.polyfrost.polynametag.client.render;
+package org.polyfrost.polynametag.render;
 
 import gg.essential.universal.UMatrixStack;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.Entity;
-import org.polyfrost.polynametag.client.PolyNametagClient;
-import org.polyfrost.polynametag.client.render.icon.EssentialIconRender;
+import org.polyfrost.polynametag.PolyNametag;
+import org.polyfrost.polynametag.render.icon.EssentialIconRender;
 
 import java.util.UUID;
 
 public class EssentialBSManager {
+
     public enum IconRenderType {
         NONE,
         PRE_1354,
@@ -20,7 +21,7 @@ public class EssentialBSManager {
     public EssentialBSManager() {
         IconRenderType iconRenderType1 = IconRenderType.NONE;
 
-        if (PolyNametagClient.isEssential()) {
+        if (PolyNametag.INSTANCE.isEssential()) {
             try {
                 // Reflective access to OnboardingData.hasAcceptedTos()
                 Class<?> onboardingDataClass = Class.forName("gg.essential.data.OnboardingData");
@@ -86,7 +87,7 @@ public class EssentialBSManager {
         switch (iconRenderType) {
             case V1354:
                 try {
-                    iconRender1 = Class.forName("org.polyfrost.polynametag.client.render.icon.V1354IconRender").asSubclass(EssentialIconRender.class).getDeclaredConstructor().newInstance();
+                    iconRender1 = Class.forName("org.polyfrost.polynametag.render.icon.V1354IconRender").asSubclass(EssentialIconRender.class).getDeclaredConstructor().newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                     iconRender1 = null;
@@ -94,7 +95,7 @@ public class EssentialBSManager {
                 break;
             case PRE_1354:
                 try {
-                    iconRender1 = Class.forName("org.polyfrost.polynametag.client.render.icon.Pre1354IconRender").asSubclass(EssentialIconRender.class).getDeclaredConstructor().newInstance();
+                    iconRender1 = Class.forName("org.polyfrost.polynametag.render.icon.Pre1354IconRender").asSubclass(EssentialIconRender.class).getDeclaredConstructor().newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                     iconRender1 = null;

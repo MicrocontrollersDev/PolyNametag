@@ -1,4 +1,4 @@
-package org.polyfrost.polynametag.mixin.client;
+package org.polyfrost.polynametag.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
-import org.polyfrost.polynametag.client.NametagRenderer;
-import org.polyfrost.polynametag.client.PolyNametagConfig;
+import org.polyfrost.polynametag.NametagRenderer;
+import org.polyfrost.polynametag.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,7 +22,7 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @WrapOperation(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"))
     private int polynametag$switchTextRendering(FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
             return original.call(instance, text, x, y, color);
         }
 
@@ -31,14 +31,14 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @Inject(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At("HEAD"), cancellable = true)
     private void polynametag$checkInventory(T entity, double x, double y, double z, CallbackInfo ci) {
-        if (PolyNametagConfig.INSTANCE.isEnabled() && !PolyNametagConfig.INSTANCE.getShowInInventory() && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
+        if (PolyNametagConfig.INSTANCE.getEnabled() && !PolyNametagConfig.INSTANCE.getShowInInventory() && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
             ci.cancel();
         }
     }
 
     @ModifyArgs(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;scale(FFF)V"))
     private void polyNametag$changeScale(Args args) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
             return;
         }
 
@@ -50,7 +50,7 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @Inject(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
     private void polynametag$replaceDefaultBackgroundRendering(T entity, double x, double y, double z, CallbackInfo ci) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
             return;
         }
 
@@ -59,7 +59,7 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @Redirect(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;begin(ILnet/minecraft/client/renderer/vertex/VertexFormat;)V"))
     private void polynametag$cancelDefaultBackgroundRendering$begin(WorldRenderer instance, int glMode, VertexFormat format) {
-        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (PolyNametagConfig.INSTANCE.getEnabled()) {
             return;
         }
 
@@ -68,7 +68,7 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @Redirect(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;pos(DDD)Lnet/minecraft/client/renderer/WorldRenderer;"))
     private WorldRenderer polynametag$cancelDefaultBackgroundRendering$pos(WorldRenderer instance, double x, double y, double z) {
-        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (PolyNametagConfig.INSTANCE.getEnabled()) {
             return instance;
         }
 
@@ -77,7 +77,7 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @Redirect(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;color(FFFF)Lnet/minecraft/client/renderer/WorldRenderer;"))
     private WorldRenderer polynametag$cancelDefaultBackgroundRendering$color(WorldRenderer instance, float red, float green, float blue, float alpha) {
-        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (PolyNametagConfig.INSTANCE.getEnabled()) {
             return instance;
         }
 
@@ -86,7 +86,7 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @Redirect(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;endVertex()V"))
     private void polynametag$cancelDefaultBackgroundRendering$endVertex(WorldRenderer instance) {
-        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (PolyNametagConfig.INSTANCE.getEnabled()) {
             return;
         }
 
@@ -95,7 +95,7 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @Redirect(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
     private void polynametag$cancelDefaultBackgroundRendering(Tessellator instance) {
-        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (PolyNametagConfig.INSTANCE.getEnabled()) {
             return;
         }
 
@@ -104,7 +104,7 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
     @ModifyArg(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V", ordinal = 0), index = 1)
     private float polynametag$modifyTranslateY(float y) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
             return y;
         }
 

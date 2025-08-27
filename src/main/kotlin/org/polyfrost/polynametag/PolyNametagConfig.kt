@@ -1,4 +1,4 @@
-package org.polyfrost.polynametag.client
+package org.polyfrost.polynametag
 
 import club.sk1er.patcher.config.OldPatcherConfig
 import club.sk1er.patcher.config.PatcherConfig
@@ -9,13 +9,12 @@ import org.polyfrost.oneconfig.api.config.v1.annotations.Dropdown
 import org.polyfrost.oneconfig.api.config.v1.annotations.Slider
 import org.polyfrost.oneconfig.api.config.v1.annotations.Switch
 import org.polyfrost.oneconfig.api.ui.v1.Notifications
-import org.polyfrost.polynametag.PolyNametagConstants
 import org.polyfrost.polyui.color.rgba
 
-object PolyNametagConfig : Config("nametag.json", "/polynametag.svg", PolyNametagConstants.NAME, Category.QOL) {
+object PolyNametagConfig : Config("nametag.json", "/polynametag.svg", PolyNametag.NAME, Category.QOL) {
 
     @Switch(title = "Enabled")
-    var isEnabled = true
+    var enabled = true
 
     @Slider(title = "Height offset", min = -0.5f, max = 0.5f, description = "How much to offset the nametag vertically")
     var heightOffset = 0f
@@ -71,15 +70,14 @@ object PolyNametagConfig : Config("nametag.json", "/polynametag.svg", PolyNameta
     init {
         addDependency("backgroundColor", "background")
         addDependency("background", "Patcher's Disable Nametag Boxes. Please turn it off to use this feature.") {
-            if (PolyNametagClient.isPatcher && PatcherConfig.disableNametagBoxes) {
+            if (PolyNametag.isPatcher && PatcherConfig.disableNametagBoxes) {
                 Property.Display.DISABLED
             } else {
                 Property.Display.SHOWN
             }
         }
-
         addDependency("showOwnNametag", "Patcher's Show Own Nametag. Please turn it off to use this feature.") {
-            if (PolyNametagClient.isPatcher && PatcherConfig.showOwnNametag) {
+            if (PolyNametag.isPatcher && PatcherConfig.showOwnNametag) {
                 Property.Display.DISABLED
             } else {
                 Property.Display.SHOWN

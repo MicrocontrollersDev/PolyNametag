@@ -1,8 +1,8 @@
-package org.polyfrost.polynametag.mixin.client.levelhead;
+package org.polyfrost.polynametag.mixin.levelhead;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import org.polyfrost.polynametag.client.PolyNametagConfig;
+import org.polyfrost.polynametag.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -28,7 +28,7 @@ public class Mixin_AboveHeadRender_LevelheadTagCompatibility {
             )
     )
     private boolean polynametag$modifySelfChecks(@Coerce Object instance, EntityPlayer player) {
-        return !(PolyNametagConfig.INSTANCE.isEnabled() && PolyNametagConfig.INSTANCE.getShowOwnNametag()) && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.getUniqueID().equals(player.getUniqueID());
+        return !(PolyNametagConfig.INSTANCE.getEnabled() && PolyNametagConfig.INSTANCE.getShowOwnNametag()) && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.getUniqueID().equals(player.getUniqueID());
     }
 
 }

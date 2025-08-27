@@ -1,4 +1,4 @@
-package org.polyfrost.polynametag.client
+package org.polyfrost.polynametag
 
 import dev.deftu.omnicore.client.render.OmniRenderState
 import gg.essential.universal.UMatrixStack
@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.Entity
 import org.lwjgl.opengl.GL11
 import org.polyfrost.oneconfig.utils.v1.dsl.mc
-import org.polyfrost.polynametag.mixin.client.Accessor_FontRenderer_DrawString
-import org.polyfrost.polynametag.client.render.EssentialBSManager
+import org.polyfrost.polynametag.mixin.Accessor_FontRenderer_DrawString
+import org.polyfrost.polynametag.render.EssentialBSManager
 import org.polyfrost.polyui.unit.Vec2
 import kotlin.math.cos
 import kotlin.math.sin
