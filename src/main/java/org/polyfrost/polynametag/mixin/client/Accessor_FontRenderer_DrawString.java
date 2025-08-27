@@ -1,4 +1,4 @@
-package org.polyfrost.polynametag.mixin;
+package org.polyfrost.polynametag.mixin.client;
 
 import net.minecraft.client.gui.FontRenderer;
 import org.spongepowered.asm.mixin.Mixin;

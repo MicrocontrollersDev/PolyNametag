@@ -1,11 +1,11 @@
-package org.polyfrost.polynametag.mixin.levelhead;
+package org.polyfrost.polynametag.mixin.client.levelhead;
 
 import club.sk1er.mods.levelhead.display.LevelheadTag;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.player.EntityPlayer;
-import org.polyfrost.polynametag.NametagRenderer;
-import org.polyfrost.polynametag.PolyNametagConfig;
+import org.polyfrost.polynametag.client.NametagRenderer;
+import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -30,7 +30,7 @@ public abstract class Mixin_AboveHeadRender_FixLevelheadRendering {
         )
     )
     private int polynametag$fixStringRendering(@Coerce Object instance, Operation<Integer> original, String text, int x, int y, int color) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return original.call(instance);
         }
 
