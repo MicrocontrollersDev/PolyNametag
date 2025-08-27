@@ -1,4 +1,4 @@
-package org.polyfrost.polynametag.mixin;
+package org.polyfrost.polynametag.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -10,10 +10,9 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
-import org.polyfrost.polynametag.NametagRenderer;
-import org.polyfrost.polynametag.PolyNametagConfig;
+import org.polyfrost.polynametag.client.NametagRenderer;
+import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -28,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 //$$ import com.llamalad7.mixinextras.sugar.Local;
 //$$ import net.minecraft.client.option.GameOptions;
 //$$ import org.joml.Matrix4f;
+//$$ import org.spongepowered.asm.mixin.Unique;
 //$$ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 //#endif
 
@@ -59,7 +59,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
             //$$ TextRenderer instance, Text text, float x, float y, int color, boolean shadow, Matrix4f matrix4f, VertexConsumerProvider vertexConsumerProvider, TextRenderer.TextLayerType textLayerType, int backgroundColor, int packedLight, Operation<Integer> original, @Local(ordinal = 0, argsOnly = true) MatrixStack matrixStack
             //#endif
     ) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             //#if MC < 1.16.5
             return original.call(instance, text, x, y, color);
             //#else
@@ -82,7 +82,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
             //$$ EntityRenderState entityRenderState, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci
             //#endif
     ) {
-        if (PolyNametagConfig.INSTANCE.getEnabled() && !PolyNametagConfig.INSTANCE.getShowInInventory() && Minecraft.getMinecraft().currentScreen instanceof
+        if (PolyNametagConfig.INSTANCE.isEnabled() && !PolyNametagConfig.INSTANCE.getShowInInventory() && Minecraft.getMinecraft().currentScreen instanceof
                 //#if MC < 1.16.5
                 GuiInventory
                 //#else
@@ -96,7 +96,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
     //#if MC < 1.16.5
     @ModifyArgs(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;scale(FFF)V"))
     private void polyNametag$changeScale(Args args) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return;
         }
 
@@ -121,7 +121,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
             //#endif
     )
     private float polynametag$modifyTranslateY(float y) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return y;
         }
         //#if MC < 1.16.5
@@ -153,7 +153,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
     //#elseif MC < 1.17.1
     @Inject(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
     private void polynametag$replaceDefaultBackgroundRendering(T entity, String str, double x, double y, double z, int maxDistance, CallbackInfo ci) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return;
         }
 
@@ -162,7 +162,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
     @Redirect(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;begin(ILnet/minecraft/client/renderer/vertex/VertexFormat;)V"))
     private void polynametag$cancelDefaultBackgroundRendering$begin(WorldRenderer instance, int glMode, VertexFormat format) {
-        if (PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
             return;
         }
 
@@ -171,7 +171,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
     @Redirect(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;pos(DDD)Lnet/minecraft/client/renderer/WorldRenderer;"))
     private WorldRenderer polynametag$cancelDefaultBackgroundRendering$pos(WorldRenderer instance, double x, double y, double z) {
-        if (PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
             return instance;
         }
 
@@ -180,7 +180,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
     @Redirect(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;color(FFFF)Lnet/minecraft/client/renderer/WorldRenderer;"))
     private WorldRenderer polynametag$cancelDefaultBackgroundRendering$color(WorldRenderer instance, float red, float green, float blue, float alpha) {
-        if (PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
             return instance;
         }
 
@@ -189,7 +189,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
     @Redirect(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;endVertex()V"))
     private void polynametag$cancelDefaultBackgroundRendering$endVertex(WorldRenderer instance) {
-        if (PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
             return;
         }
 
@@ -198,7 +198,7 @@ public class Mixin_Render_ReplaceRendering<T extends Entity> {
 
     @Redirect(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
     private void polynametag$cancelDefaultBackgroundRendering(Tessellator instance) {
-        if (PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
             return;
         }
 

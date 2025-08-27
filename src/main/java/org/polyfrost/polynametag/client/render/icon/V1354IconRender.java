@@ -1,4 +1,4 @@
-package org.polyfrost.polynametag.render.icon;
+package org.polyfrost.polynametag.client.render.icon;
 
 import gg.essential.Essential;
 import gg.essential.config.EssentialConfig;

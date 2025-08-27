@@ -1,26 +1,19 @@
-package org.polyfrost.polynametag
+package org.polyfrost.polynametag.client
 
 import dev.deftu.omnicore.client.render.OmniMatrixStack
-import dev.deftu.omnicore.client.render.OmniRenderState
 import dev.deftu.omnicore.client.render.pipeline.DrawModes
 import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.client.render.pipeline.VertexFormats
-import dev.deftu.omnicore.client.render.state.BlendEquation
-import dev.deftu.omnicore.client.render.state.BlendFunction
-import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
-import dev.deftu.omnicore.client.render.state.OmniManagedDepthState
 import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.common.OmniColor
 import dev.deftu.omnicore.common.OmniIdentifier
 import gg.essential.universal.UMatrixStack
 import net.minecraft.client.entity.AbstractClientPlayer
-import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.Entity
-import org.lwjgl.opengl.GL11
 import org.polyfrost.oneconfig.utils.v1.dsl.mc
-import org.polyfrost.polynametag.mixin.Accessor_FontRenderer_DrawString
-import org.polyfrost.polynametag.render.EssentialBSManager
+import org.polyfrost.polynametag.client.render.EssentialBSManager
+import org.polyfrost.polynametag.mixin.client.Accessor_FontRenderer_DrawString
 import org.polyfrost.polyui.unit.Vec2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -34,6 +27,8 @@ import kotlin.math.sin
 //#else
 //$$ import net.minecraft.util.math.Matrix4f
 //#endif
+//#else
+import net.minecraft.client.gui.FontRenderer
 //#endif
 
 object NametagRenderer {
@@ -54,12 +49,12 @@ object NametagRenderer {
 
     @JvmStatic
     fun drawNametagString(
-            //#if MC >= 1.17.1
-            //$$ matrixStack: MatrixStack, fontRenderer: TextRenderer, matrix4f: Matrix4f, vertexConsumerProvider: VertexConsumerProvider, textLayerType: TextRenderer.TextLayerType, backgroundColor: Int, packedLight: Int,
-            //#else
-            fontRenderer: FontRenderer,
-            //#endif
-            text: String, x: Float, y: Float, color: Int): Int {
+        //#if MC >= 1.17.1
+        //$$ matrixStack: MatrixStack, fontRenderer: TextRenderer, matrix4f: Matrix4f, vertexConsumerProvider: VertexConsumerProvider, textLayerType: TextRenderer.TextLayerType, backgroundColor: Int, packedLight: Int,
+        //#else
+        fontRenderer: FontRenderer,
+        //#endif
+        text: String, x: Float, y: Float, color: Int): Int {
 
         //#if MC < 1.16.5 && MC >= 1.21.1
 
@@ -107,9 +102,9 @@ object NametagRenderer {
 
     @JvmStatic
     fun drawBackground(x1: Double, x2: Double, entity: Entity
-    //#if MC >= 1.16.5
-    //$$ , matrixStack: MatrixStack
-    //#endif
+        //#if MC >= 1.16.5
+        //$$ , matrixStack: MatrixStack
+        //#endif
     ) {
         if (!PolyNametagConfig.background) {
             return
@@ -147,13 +142,13 @@ object NametagRenderer {
                     buffer
                         .vertex(stack, (x + sin(angle) * radius).toDouble(), (y + cos(angle) * radius).toDouble(), 0.0)
                         .color(color)
-                    .next()
+                        .next()
                 }
             } else {
                 buffer
                     .vertex(stack, x.toDouble(), y.toDouble(), 0.0)
                     .color(color)
-                .next()
+                    .next()
             }
         }
 

@@ -1,4 +1,4 @@
-package org.polyfrost.polynametag.render.icon;
+package org.polyfrost.polynametag.client.render.icon;
 
 import gg.essential.universal.UMatrixStack;
 import net.minecraft.entity.Entity;

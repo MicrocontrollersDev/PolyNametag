@@ -1,6 +1,6 @@
-package org.polyfrost.polynametag.mixin.levelhead;
+package org.polyfrost.polynametag.mixin.client.levelhead;
 
-import org.polyfrost.polynametag.PolyNametagConfig;
+import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -21,7 +21,7 @@ public abstract class Mixin_AboveHeadRender_UseCustomConfigArgs {
     @Dynamic("LevelHead")
     @ModifyArg(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics$GL;translate(FFF)V"), index = 1, remap = false)
     private float polyNametag$changeOffset(float original) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return original;
         }
 
@@ -31,7 +31,7 @@ public abstract class Mixin_AboveHeadRender_UseCustomConfigArgs {
     @Dynamic("LevelHead")
     @ModifyArgs(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics$GL;scale(DDD)V"), remap = false)
     private void polyNametag$changeScale(Args args) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return;
         }
 
@@ -44,7 +44,7 @@ public abstract class Mixin_AboveHeadRender_UseCustomConfigArgs {
     @Dynamic("LevelHead")
     @ModifyArgs(method = "renderName", remap = false, at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;color(FFFF)Lgg/essential/universal/UGraphics;"))
     private void polyNametag$changeBackgroundColor(Args args) {
-        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return;
         }
 
