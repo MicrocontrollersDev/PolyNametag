@@ -9,7 +9,9 @@ import gg.essential.handlers.OnlineIndicator;
 import gg.essential.universal.UMatrixStack;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.Entity;
+//#if MC < 1.17.1
 import net.minecraft.entity.player.EntityPlayer;
+//#endif
 
 public class V1354IconRender implements EssentialIconRender {
     @Override
@@ -19,9 +21,17 @@ public class V1354IconRender implements EssentialIconRender {
 
     @Override
     public boolean canDrawIndicator(Entity entity) {
+        //#if MC <= 1.12.2
         if (OnboardingData.hasAcceptedTos() && EssentialConfig.INSTANCE.getShowEssentialIndicatorOnNametag() && entity instanceof AbstractClientPlayer) {
-            return Essential.getInstance().getConnectionManager().getProfileManager().getStatus(((EntityPlayer) entity).getGameProfile().getId()) != ProfileStatus.OFFLINE;
+            return Essential.getInstance().getConnectionManager().getProfileManager().getStatus(
+                    //#if MC < 1.17.1
+                    ((EntityPlayer)
+                            //#else
+                            //$$ ((PlayerEntity)
+                            //#endif
+                            entity).getGameProfile().getId()) != ProfileStatus.OFFLINE;
         }
+        //#endif
         return false;
     }
 }

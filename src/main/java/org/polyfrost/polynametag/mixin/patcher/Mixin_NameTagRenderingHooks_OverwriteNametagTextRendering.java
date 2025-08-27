@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Pseudo
 @Mixin(targets = "club.sk1er.patcher.hooks.NameTagRenderingHooks")
 public abstract class Mixin_NameTagRenderingHooks_OverwriteNametagTextRendering {
-
+    //#if MC <= 1.12.2
     @Dynamic("Patcher")
     @Inject(
         method = "drawNametagText",
@@ -28,5 +28,6 @@ public abstract class Mixin_NameTagRenderingHooks_OverwriteNametagTextRendering 
 
         cir.setReturnValue(NametagRenderer.drawNametagString(fontRenderer, text, x, y, color));
     }
+    //#endif
 
 }

@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 @Mixin(RendererLivingEntity.class)
 public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingBase> {
 
+    //#if MC < 1.16.5
     @WrapOperation(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"))
     private int polynametag$switchTextRendering(FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
         if (!PolyNametagConfig.INSTANCE.getEnabled()) {
@@ -42,10 +43,10 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
             return;
         }
 
-        double scale = PolyNametagConfig.INSTANCE.getScale();
-        args.set(0, ((double) args.get(0)) * scale);
-        args.set(1, ((double) args.get(1)) * scale);
-        args.set(2, ((double) args.get(2)) * scale);
+        float scale = PolyNametagConfig.INSTANCE.getScale();
+        args.set(0, ((float) args.get(0)) * scale);
+        args.set(1, ((float) args.get(1)) * scale);
+        args.set(2, ((float) args.get(2)) * scale);
     }
 
     @Inject(method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
@@ -110,5 +111,6 @@ public class Mixin_RendererLivingEntity_ReplaceRendering<T extends EntityLivingB
 
         return y + PolyNametagConfig.INSTANCE.getHeightOffset();
     }
+    //#endif
 
 }

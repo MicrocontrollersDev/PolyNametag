@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender", priority = 999)
 public abstract class Mixin_AboveHeadRender_UseCustomConfigArgs {
 
+    //#if MC <= 1.12.2
     @Dynamic("LevelHead")
     @ModifyArg(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics$GL;translate(FFF)V"), index = 1, remap = false)
     private float polyNametag$changeOffset(float original) {
@@ -49,5 +50,6 @@ public abstract class Mixin_AboveHeadRender_UseCustomConfigArgs {
 
         args.set(3, 0f);
     }
+    //#endif
 
 }
