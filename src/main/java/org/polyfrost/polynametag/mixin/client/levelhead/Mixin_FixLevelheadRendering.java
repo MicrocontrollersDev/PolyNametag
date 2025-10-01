@@ -3,6 +3,8 @@ package org.polyfrost.polynametag.mixin.client.levelhead;
 import club.sk1er.mods.levelhead.display.LevelheadTag;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.deftu.omnicore.api.client.render.OmniRenderingContext;
+import dev.deftu.omnicore.api.color.OmniColor;
 import net.minecraft.entity.player.EntityPlayer;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
@@ -14,14 +16,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Taken from Patcher under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
- * https://github.com/Sk1erLLC/Patcher/blob/master/LICENSE.md
+ * <a href="https://github.com/Sk1erLLC/Patcher/blob/master/LICENSE.md">LICENSE.md</a>
  */
 @Pseudo
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender", priority = 1001, remap = false)
-public abstract class Mixin_AboveHeadRender_FixLevelheadRendering {
-
-    //#if MC <= 1.12.2
-    @Dynamic("Levelhead")
+public abstract class Mixin_FixLevelheadRendering {
     @WrapOperation(
         method = "render(Lnet/minecraft/client/gui/FontRenderer;Lclub/sk1er/mods/levelhead/display/LevelheadTag$LevelheadComponent;I)V",
         at = @At(
@@ -29,13 +28,14 @@ public abstract class Mixin_AboveHeadRender_FixLevelheadRendering {
             target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I",
             remap = true
         )
-    )
+    ) @Dynamic("Levelhead")
     private int polynametag$fixStringRendering(@Coerce Object instance, Operation<Integer> original, String text, int x, int y, int color) {
         if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return original.call(instance);
         }
 
-        return NametagRenderer.drawNametagString(text, x, y, color);
+        NametagRenderer.drawNametagString(OmniRenderingContext.from(), text, x, y, new OmniColor(color));
+        return 0;
     }
 
     @Dynamic("Levelhead")
@@ -53,6 +53,4 @@ public abstract class Mixin_AboveHeadRender_FixLevelheadRendering {
 //        NametagRenderingKt.drawFrontBackground(-stringWidth - 2, stringWidth + 1, entityIn);
 //        GlStateManager.depthMask(true);
     }
-    //#endif
-
 }

@@ -13,15 +13,14 @@ import org.polyfrost.polynametag.PolyNametagConstants
 import org.polyfrost.polyui.color.rgba
 
 object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynametag_dark.svg", PolyNametagConstants.NAME, Category.QOL) {
-
-    @Switch(title = "Enabled")
+    @JvmStatic @Switch(title = "Enabled")
     var isEnabled = true
 
-    @Slider(title = "Height offset", min = -0.5f, max = 0.5f, description = "How much to offset the nametag vertically")
+    @JvmStatic @Slider(title = "Height offset", min = -0.5f, max = 0.5f, description = "How much to offset the nametag vertically")
     var heightOffset = 0.5f // TODO: fix sliders in oneconfig
         get() = field.coerceIn(-0.5f, 0.5f)
 
-    @Slider(title = "Scale", min = 0f, max = 1f, description = "How much to scale the nametag")
+    @JvmStatic @Slider(title = "Scale", min = 0f, max = 1f, description = "How much to scale the nametag")
     var scale = 1f // TODO: fix sliders in oneconfig
         get() = field.coerceIn(0f, 1f)
 
@@ -48,11 +47,11 @@ object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynamet
     var info1 = 0
      */
 
-    @Switch(title = "Show own nametag", description = "Whether to show your own nametag")
-    var showOwnNametag = true
+    @JvmStatic @Switch(title = "Show own nametag", description = "Whether to show your own nametag")
+    var isShowOwnNametag = true
 
-    @Switch(title = "Show in inventory")
-    var showInInventory = false
+    @JvmStatic @Switch(title = "Show in inventory")
+    var isShowInInventory = false
 
     @Switch(title = "Background", description = "Whether to render a background behind the nametag")
     var background = true
@@ -77,7 +76,7 @@ object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynamet
                 Property.Display.SHOWN
             }
         }
-        addDependency("showOwnNametag", "Patcher's Show Own Nametag. Please turn it off to use this feature.") {
+        addDependency("isShowOwnNametag", "Patcher's Show Own Nametag. Please turn it off to use this feature.") {
             if (PolyNametagClient.isPatcher && PatcherConfig.showOwnNametag) {
                 Property.Display.DISABLED
             } else {
@@ -85,7 +84,7 @@ object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynamet
             }
         }
         addDependency("cornerRadius", "rounded")
-        addDependency("showInInventory", "showOwnNametag")
+        addDependency("isShowInInventory", "isShowOwnNametag")
 
         if (!hasMigratedPatcher) {
             try {
@@ -100,7 +99,7 @@ object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynamet
                     didAnything = true
                 }
                 if (OldPatcherConfig.showOwnNametag) {
-                    showOwnNametag = true
+                    isShowOwnNametag = true
                     didAnything = true
                 }
 

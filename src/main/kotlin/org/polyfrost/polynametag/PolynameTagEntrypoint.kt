@@ -51,7 +51,7 @@ class PolyNametagEntrypoint
         event: FMLInitializationEvent
         //#endif
     ) {
-        //#if MC <= 1.12.2
+        //#if FORGE && MC <= 1.12.2
         if (!event.side.isClient) {
             return
         }

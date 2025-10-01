@@ -1,181 +1,123 @@
 package org.polyfrost.polynametag.client
 
-import dev.deftu.omnicore.client.render.OmniMatrixStack
-import dev.deftu.omnicore.client.render.pipeline.DrawModes
-import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.client.render.pipeline.VertexFormats
-import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
-import dev.deftu.omnicore.common.OmniColor
-import dev.deftu.omnicore.common.OmniIdentifier
+import dev.deftu.omnicore.api.client.render.OmniTextRenderer
+import dev.deftu.omnicore.api.client.render.TextShadowType
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
+import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.vertex.roundedQuad
+import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.omnicore.internal.client.render.stack.OmniMatrixUnit
 import gg.essential.universal.UMatrixStack
 import net.minecraft.client.entity.AbstractClientPlayer
-import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.Entity
-import org.polyfrost.oneconfig.utils.v1.dsl.mc
 import org.polyfrost.polynametag.client.render.EssentialBSManager
-import org.polyfrost.polynametag.mixin.client.Accessor_FontRenderer_DrawString
-import org.polyfrost.polyui.unit.Vec2
-import kotlin.math.cos
-import kotlin.math.sin
-
-//#if MC >= 1.16.5
-//$$ import net.minecraft.client.util.math.MatrixStack
-//$$ import net.minecraft.client.font.TextRenderer
-//$$ import net.minecraft.client.render.VertexConsumerProvider
-//#if MC >= 1.19.4
-//$$ import org.joml.Matrix4f
-//#else
-//$$ import net.minecraft.util.math.Matrix4f
-//#endif
-//#else
-import net.minecraft.client.gui.FontRenderer
-//#endif
 
 object NametagRenderer {
-    //#if MC < 1.16.5 || MC >= 1.21.2
-
-    private val points = arrayOf(Vec2(1f, 1f), Vec2(1f, -1f), Vec2(-1f, -1f), Vec2(-1f, 1f))
-    private val translate = arrayOf(Vec2(1f, 0f), Vec2(0f, -1f), Vec2(-1f, 0f), Vec2(0f, 1f))
+    private val PIPELINE by lazy {
+        OmniRenderPipelines.POSITION_COLOR_TRIANGLES
+            .newBuilder()
+            .setDepthTest(OmniRenderPipeline.DepthTest.LESS_OR_EQUAL)
+            .build()
+    }
 
     var isDrawingIndicator = false
     private val essentialBSManager = EssentialBSManager()
 
-    //#if MC < 1.16.5
     @JvmStatic
-    fun drawNametagString(text: String, x: Float, y: Float, color: Int): Int {
-        return drawNametagString(mc.fontRendererObj, text, x, y, color)
-    }
-    //#endif
-
-    @JvmStatic
-    fun drawNametagString(
-        //#if MC >= 1.17.1
-        //$$ matrixStack: MatrixStack, fontRenderer: TextRenderer, matrix4f: Matrix4f, vertexConsumerProvider: VertexConsumerProvider, textLayerType: TextRenderer.TextLayerType, backgroundColor: Int, packedLight: Int,
-        //#else
-        fontRenderer: FontRenderer,
-        //#endif
-        text: String, x: Float, y: Float, color: Int): Int {
-
-        //#if MC < 1.16.5 && MC >= 1.21.1
-
-        //#if MC < 1.16.5
-        if (fontRenderer !is Accessor_FontRenderer_DrawString) {
-            return 0
-        }
-        //#endif
-
-        //#if MC < 1.16.5
-        GlStateManager.pushMatrix()
-        //#else
-        //$$ matrixStack.push();
-        //#endif
-        return when (PolyNametagConfig.textType) { // TODO: FULL SHADOW
-            //#if MC < 1.16.5
-            0 -> fontRenderer.invokeRenderString(text, x, y, color, false)
-            1 -> fontRenderer.invokeRenderString(text, x, y, color, true)
-            //#else
-            //$$ 0 -> fontRenderer.draw(text, x, y, color, false, matrix4f, vertexConsumerProvider, textLayerType, backgroundColor, packedLight);
-            //$$ 1 -> fontRenderer.draw(text, x, y, color, true, matrix4f, vertexConsumerProvider, textLayerType, backgroundColor, packedLight);
-            //#endif
-            else -> 0
-        }.apply {
-            //#if MC < 1.16.5
-            GlStateManager.popMatrix()
-            //#else
-            //$$ matrixStack.pop();
-            //#endif
-        }
-        //#else
-        //$$ return 0
-        //#endif
-    }
-
-    private val PIPELINE by lazy {
-        OmniRenderPipeline.builderWithDefaultShader(
-            identifier = OmniIdentifier.create("polynametag", "nametag_background"),
-            vertexFormat = VertexFormats.POSITION_COLOR,
-            mode = DrawModes.TRIANGLE_FAN,
-        ).apply {
-
-        }.build()
-    }
-
-    @JvmStatic
-    fun drawBackground(x1: Double, x2: Double, entity: Entity
-        //#if MC >= 1.16.5
-        //$$ , matrixStack: MatrixStack
-        //#endif
+    fun drawBackground(
+        matrices: OmniMatrixStack,
+        x1: Double, x2: Double,
+        entity: Entity
     ) {
         if (!PolyNametagConfig.background) {
             return
         }
-        //#if MC < 1.16.5
-        val stack = OmniMatrixStack()
-        //#else
-        //$$ val stack = OmniMatrixStack(matrixStack)
-        //#endif
 
-        stack.push()
-        val realX1 = x1 - if (canDrawEssentialIndicator(entity)) 10 else 0
-        stack.translate((realX1 + x2) / 2f, 3.5, 0.0)
+        matrices.with {
+            val baselineY = 3.5f
 
-        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_COLOR)
-
-        val halfWidth = (x2 - realX1) / 2f + PolyNametagConfig.paddingX.coerceIn(0f, 10f)
-        val radius = if (PolyNametagConfig.rounded) PolyNametagConfig.cornerRadius.coerceIn(0f, 10f).coerceAtMost(4.5f + PolyNametagConfig.paddingY.coerceIn(0f, 10f)).coerceAtMost(halfWidth.toFloat()) else 0f
-        val width = halfWidth - radius
-        val distanceFromPlayer = entity.getDistanceToEntity(mc.thePlayer)
-        val quality = ((distanceFromPlayer * 4 + 10).coerceAtMost(350f) / 4f).toInt()
-        val color: Int
-        with(PolyNametagConfig.backgroundColor) {
-            color = OmniColor.Rgba.getRgba(r, g, b, a.coerceAtMost(63))
-        }
-
-        for (a in 0..3) {
-            val (transX, transY) = translate[a]
-            val (pointX, pointY) = points[a]
-            val x = pointX * width
-            val y = pointY * (4.5 + PolyNametagConfig.paddingY.coerceIn(0f, 10f) - radius)
-            if (PolyNametagConfig.rounded) {
-                for (b in 0 until 90 / quality) {
-                    val angle = Math.toRadians((a * 90 + b * quality).toDouble())
-                    buffer
-                        .vertex(stack, (x + sin(angle) * radius).toDouble(), (y + cos(angle) * radius).toDouble(), 0.0)
-                        .color(color)
-                        .next()
-                }
-            } else {
-                buffer
-                    .vertex(stack, x.toDouble(), y.toDouble(), 0.0)
-                    .color(color)
-                    .next()
+            val leftPad = if (canDrawEssentialIndicator(entity)) 10f else 0f
+            val realX1 = (x1.toFloat() - leftPad)
+            val realX2 = x2.toFloat()
+            val span = (realX2 - realX1).coerceAtLeast(0f)
+            if (span <= 0f) {
+                return@with
             }
-        }
 
-        buffer.build()?.drawWithCleanup(PIPELINE)
-        stack.pop();
+            val centerX = (realX1 + realX2) / 2f
+            matrices.translate(centerX, baselineY, 0.01f)
+
+
+            val color = PolyNametagConfig.backgroundColor.let { c ->
+                OmniColor(c.r, c.g, c.b, c.a)
+            }
+
+            val buffer = PIPELINE.createBufferBuilder()
+
+            val halfWidth = (span / 2f) + PolyNametagConfig.paddingX.coerceIn(0f, 10f)
+            val halfHeight = 4.5f + PolyNametagConfig.paddingY.coerceIn(0f, 10f)
+            val radius = if (PolyNametagConfig.rounded) {
+                PolyNametagConfig.cornerRadius
+                    .coerceIn(0f, 10f)
+                    .coerceAtMost(halfWidth)
+                    .coerceAtMost(halfHeight)
+            } else 0f
+
+            buffer.roundedQuad(
+                stack = matrices,
+                x = (-halfWidth).toDouble(),
+                y = (-halfHeight).toDouble(),
+                width = (halfWidth * 2f).toDouble(),
+                height = (halfHeight * 2f).toDouble(),
+                radius = radius,
+                color = color,
+                segmentScale = 1.5
+            )
+
+            buffer.buildOrNull()?.drawAndClose(PIPELINE)
+        }
     }
 
     @JvmStatic
-    fun drawBackground(entity: Entity
-        //#if MC >= 1.16.5
-        //$$ , matrixStack: MatrixStack
-        //#endif
+    fun drawBackground(
+        matrices: OmniMatrixStack,
+        entity: Entity
     ) {
-        //#if MC < 1.16.5
-        val halfWidth = mc.fontRendererObj.getStringWidth(entity.displayName.formattedText) / 2 + 1.0
-        //#else
-        //$$ val halfWidth = mc.textRenderer.getWidth(entity.name.asOrderedText()) / 2 + 1.0
-        //#endif
-        //#if MC < 1.16.5
-        drawBackground(-halfWidth, halfWidth, entity)
-        //#else
-        //$$ drawBackground(-halfWidth, halfWidth, entity, matrixStack)
-        //#endif
+        val displayName = entity.displayName ?: return
+        val halfWidth = OmniTextRenderer.width(
+            //#if MC >= 1.16.5
+            //$$ displayName.string
+            //#else
+            displayName.formattedText
+            //#endif
+        ) / 2 + 1.0
+        drawBackground(matrices, -halfWidth, halfWidth, entity)
+    }
+
+    @JvmStatic
+    fun drawNametagString(
+        matrices: OmniMatrixStack,
+        text: String,
+        x: Float, y: Float,
+        color: OmniColor
+    ): Int {
+        return matrices.with {
+            matrices.translate(0f, 0f, -0.01f)
+            OmniTextRenderer.render(matrices, text, x, y, color, when (PolyNametagConfig.textType) {
+                0 -> TextShadowType.None
+                1 -> TextShadowType.Drop
+                2 -> TextShadowType.Outline(OmniColor((color.alpha / 4 shl 24)))
+                else -> throw IllegalStateException("Unexpected value: ${PolyNametagConfig.textType}")
+            })
+        }
     }
 
     fun drawIndicator(entity: Entity, string: String, light: Int) {
-        if (entity !is AbstractClientPlayer) return
+        if (entity !is AbstractClientPlayer) {
+            return
+        }
+
         isDrawingIndicator = true
         essentialBSManager.drawIndicator(UMatrixStack(), entity, string, light)
         isDrawingIndicator = false
@@ -185,6 +127,4 @@ object NametagRenderer {
     fun canDrawEssentialIndicator(entity: Entity): Boolean {
         return essentialBSManager.canDrawIndicator(entity)
     }
-    //#endif
-
 }

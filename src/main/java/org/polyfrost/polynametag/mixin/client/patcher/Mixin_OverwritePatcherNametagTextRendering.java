@@ -1,5 +1,7 @@
 package org.polyfrost.polynametag.mixin.client.patcher;
 
+import dev.deftu.omnicore.api.client.render.OmniRenderingContext;
+import dev.deftu.omnicore.api.color.OmniColor;
 import net.minecraft.client.gui.FontRenderer;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
@@ -12,22 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Pseudo
 @Mixin(targets = "club.sk1er.patcher.hooks.NameTagRenderingHooks")
-public abstract class Mixin_NameTagRenderingHooks_OverwriteNametagTextRendering {
-    //#if MC <= 1.12.2
+public abstract class Mixin_OverwritePatcherNametagTextRendering {
     @Dynamic("Patcher")
-    @Inject(
-        method = "drawNametagText",
-        at = @At("HEAD"),
-        remap = false,
-        cancellable = true
-    )
+    @Inject(method = "drawNametagText", at = @At("HEAD"), remap = false, cancellable = true)
     private static void polyNametag$overwritePatcherDrawString(FontRenderer fontRenderer, String text, int x, int y, int color, CallbackInfoReturnable<Integer> cir) {
         if (!PolyNametagConfig.INSTANCE.isEnabled()) {
             return;
         }
 
-        cir.setReturnValue(NametagRenderer.drawNametagString(fontRenderer, text, x, y, color));
+        NametagRenderer.drawNametagString(OmniRenderingContext.from(), text, x, y, new OmniColor(color));
+        cir.setReturnValue(0);
     }
-    //#endif
-
 }

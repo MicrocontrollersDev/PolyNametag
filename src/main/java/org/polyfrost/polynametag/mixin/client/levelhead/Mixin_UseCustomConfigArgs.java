@@ -11,13 +11,11 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 /**
  * Taken from Patcher under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
- * https://github.com/Sk1erLLC/Patcher/blob/master/LICENSE.md
+ * <a href="https://github.com/Sk1erLLC/Patcher/blob/master/LICENSE.md">LICENSE.md</a>
  */
 @Pseudo
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender", priority = 999)
-public abstract class Mixin_AboveHeadRender_UseCustomConfigArgs {
-
-    //#if MC <= 1.12.2
+public abstract class Mixin_UseCustomConfigArgs {
     @Dynamic("LevelHead")
     @ModifyArg(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics$GL;translate(FFF)V"), index = 1, remap = false)
     private float polyNametag$changeOffset(float original) {
@@ -50,6 +48,4 @@ public abstract class Mixin_AboveHeadRender_UseCustomConfigArgs {
 
         args.set(3, 0f);
     }
-    //#endif
-
 }

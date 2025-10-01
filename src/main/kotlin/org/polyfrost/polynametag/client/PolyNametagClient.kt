@@ -1,7 +1,6 @@
 package org.polyfrost.polynametag.client
 
-import dev.deftu.omnicore.common.OmniLoader
-import org.polyfrost.polynametag.client.PolyNametagConfig
+import dev.deftu.omnicore.api.loader.OmniLoader
 
 object PolyNametagClient {
     @JvmStatic
@@ -13,7 +12,7 @@ object PolyNametagClient {
 
     fun initialize() {
         PolyNametagConfig.preload()
-        isEssential = OmniLoader.isModLoaded("essential") && !OmniLoader.isModLoaded("notsoessential")
-        isPatcher = OmniLoader.isModLoaded("patcher")
+        isEssential = OmniLoader.isLoaded("essential") && !OmniLoader.isLoaded("notsoessential")
+        isPatcher = OmniLoader.isLoaded("patcher")
     }
 }

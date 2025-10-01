@@ -1,1 +1,0 @@
-net.minecraft.client.renderer.entity.EntityRenderer net.minecraft.client.render.entity.EntityRenderer

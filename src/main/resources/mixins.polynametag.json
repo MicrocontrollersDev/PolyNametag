@@ -7,14 +7,16 @@
         "maxShiftBy": 5
     },
     "client": [
-        "client.essential.Mixin_OnlineIndicator_EssentialIndicatorCompatibility",
-        "client.levelhead.Mixin_AboveHeadRender_FixLevelheadRendering",
-        "client.levelhead.Mixin_AboveHeadRender_UseCustomConfigArgs",
-        "client.patcher.Mixin_NameTagRenderingHooks_OverwriteNametagTextRendering",
-        "client.Accessor_FontRenderer_DrawString",
-        "client.Mixin_Render_ReplaceRendering",
-        "client.Mixin_RendererLivingEntity_EnableSelfNametag",
-        "client.Mixin_RendererLivingEntity_ReplaceRendering"
+        "client.essential.Mixin_EssentialIndicatorCompatibility",
+        "client.levelhead.Mixin_FixLevelheadRendering",
+        "client.levelhead.Mixin_UseCustomConfigArgs",
+        "client.patcher.Mixin_OverwritePatcherNametagTextRendering",
+
+        "client.Mixin_ApplyScaling",
+        "client.Mixin_EnableSelfNametag",
+        "client.Mixin_ReplaceBackgroundRendering",
+        "client.Mixin_ReplaceTextRendering",
+        "client.Mixin_ShowInInventory"
     ],
     "verbose": true
 }
