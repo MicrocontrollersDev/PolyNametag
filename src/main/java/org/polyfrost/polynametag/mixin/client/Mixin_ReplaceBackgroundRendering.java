@@ -1,6 +1,9 @@
 package org.polyfrost.polynametag.mixin.client;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -11,18 +14,9 @@ import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Render.class)
-public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
-    @Inject(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
-    private void polynametag$replaceBackgroundRendering(T entity, String text, double x, double y, double z, int maxDistance, CallbackInfo ci) {
-        if (PolyNametagConfig.isEnabled()) {
-            NametagRenderer.drawBackground(OmniMatrixStacks.create(), entity);
-        }
-    }
-
+public abstract class Mixin_ReplaceBackgroundRendering {
     @WrapWithCondition(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;begin(ILnet/minecraft/client/renderer/vertex/VertexFormat;)V"))
     private boolean polynametag$cancelBegin(WorldRenderer instance, int glMode, VertexFormat format) {
         return !PolyNametagConfig.isEnabled();
@@ -43,8 +37,13 @@ public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
         return !PolyNametagConfig.isEnabled();
     }
 
-    @WrapWithCondition(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
-    private boolean polynametag$cancelDraw(Tessellator instance) {
-        return !PolyNametagConfig.isEnabled();
+    @WrapOperation(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
+    private void polynametag$replaceBackgroundRendering(Tessellator instance, Operation<Void> original, @Local(argsOnly = true) Entity entity) {
+        if (PolyNametagConfig.isEnabled()) {
+            System.out.println("MEOWOWORIUREENEMMEOW MRRP");
+            NametagRenderer.drawBackground(OmniMatrixStacks.create(), entity);
+        } else {
+            original.call(instance);
+        }
     }
 }
