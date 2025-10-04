@@ -69,8 +69,14 @@ public class Mixin_ReplaceTextRendering<T extends Entity> {
                     backgroundColor,
                     light
             );
+        } else {
+            return NametagRenderer.drawNametagString(
+                    OmniMatrixStacks.vanilla(matrices),
+                    content.getString(),
+                    x,
+                    y,
+                    new OmniColor(ColorFormat.ARGB, color)
+            );
         }
-
-        return NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrices), content.getString(), x, y, new OmniColor(ColorFormat.ARGB, color));
     }
 }

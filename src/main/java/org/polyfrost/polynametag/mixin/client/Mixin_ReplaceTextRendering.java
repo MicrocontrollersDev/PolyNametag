@@ -15,10 +15,10 @@ import org.spongepowered.asm.mixin.injection.At;
 public class Mixin_ReplaceTextRendering {
     @WrapOperation(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"))
     private int polyweather$replaceTextRendering(FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
-        if (!PolyNametagConfig.isEnabled()) {
+        if (PolyNametagConfig.isEnabled()) {
+            return NametagRenderer.drawNametagString(OmniMatrixStacks.create(), text, x, y, new OmniColor(color));
+        } else {
             return original.call(instance, text, x, y, color);
         }
-
-        return NametagRenderer.drawNametagString(OmniMatrixStacks.create(), text, x, y, new OmniColor(color));
     }
 }

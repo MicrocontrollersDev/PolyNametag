@@ -30,7 +30,6 @@ class PolyNametagEntrypoint
 //$$     : ClientModInitializer
 //#endif
 {
-
     //#if FORGE && MC >= 1.16.5
     //$$ init {
     //$$     setupForgeEvents(FMLJavaModLoadingContext.get().modEventBus)

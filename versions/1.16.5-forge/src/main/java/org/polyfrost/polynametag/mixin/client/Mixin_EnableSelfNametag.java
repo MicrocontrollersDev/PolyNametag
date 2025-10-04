@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class Mixin_EnableSelfNametag {
     @Redirect(method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getCameraEntity()Lnet/minecraft/world/entity/Entity;"))
     private Entity polynametag$checkOwnInvisibility(Minecraft instance) {
-        if (!PolyNametagConfig.isEnabled() || !PolyNametagConfig.isShowOwnNametag()) {
+        if (!(!PolyNametagConfig.isEnabled() || !PolyNametagConfig.isShowOwnNametag())) {
             return instance.getCameraEntity();
+        } else {
+            return null;
         }
-
-        return null;
     }
 }

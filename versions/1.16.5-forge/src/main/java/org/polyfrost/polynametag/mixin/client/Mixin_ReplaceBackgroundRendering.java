@@ -38,10 +38,8 @@ public class Mixin_ReplaceBackgroundRendering<T extends Entity> {
             //#endif
             CallbackInfo ci
     ) {
-        if (!PolyNametagConfig.isEnabled()) {
-            return;
+        if (PolyNametagConfig.isEnabled()) {
+            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(pose), entity);
         }
-
-        NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(pose), entity);
     }
 }

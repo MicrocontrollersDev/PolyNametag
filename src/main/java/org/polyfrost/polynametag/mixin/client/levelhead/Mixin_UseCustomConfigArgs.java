@@ -19,33 +19,29 @@ public abstract class Mixin_UseCustomConfigArgs {
     @Dynamic("LevelHead")
     @ModifyArg(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics$GL;translate(FFF)V"), index = 1, remap = false)
     private float polyNametag$changeOffset(float original) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+            return original + PolyNametagConfig.INSTANCE.getHeightOffset();
+        } else {
             return original;
         }
-
-        return original + PolyNametagConfig.INSTANCE.getHeightOffset();
     }
 
     @Dynamic("LevelHead")
     @ModifyArgs(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics$GL;scale(DDD)V"), remap = false)
     private void polyNametag$changeScale(Args args) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
-            return;
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+            double scale = PolyNametagConfig.INSTANCE.getScale();
+            args.set(0, ((double) args.get(0)) * scale);
+            args.set(1, ((double) args.get(1)) * scale);
+            args.set(2, ((double) args.get(2)) * scale);
         }
-
-        double scale = PolyNametagConfig.INSTANCE.getScale();
-        args.set(0, ((double) args.get(0)) * scale);
-        args.set(1, ((double) args.get(1)) * scale);
-        args.set(2, ((double) args.get(2)) * scale);
     }
 
     @Dynamic("LevelHead")
     @ModifyArgs(method = "renderName", remap = false, at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;color(FFFF)Lgg/essential/universal/UGraphics;"))
     private void polyNametag$changeBackgroundColor(Args args) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
-            return;
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+            args.set(3, 0f);
         }
-
-        args.set(3, 0f);
     }
 }

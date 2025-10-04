@@ -14,8 +14,8 @@ public class Mixin_EnableSelfNametag {
     private Entity polynametag$enableSelfNametag(RenderManager instance) {
         if (!PolyNametagConfig.isEnabled() || !PolyNametagConfig.isShowOwnNametag()) {
             return instance.livingPlayer;
+        } else {
+            return null;
         }
-
-        return null;
     }
 }

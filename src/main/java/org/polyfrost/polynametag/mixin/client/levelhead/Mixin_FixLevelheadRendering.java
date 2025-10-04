@@ -30,12 +30,11 @@ public abstract class Mixin_FixLevelheadRendering {
         )
     ) @Dynamic("Levelhead")
     private int polynametag$fixStringRendering(@Coerce Object instance, Operation<Integer> original, String text, int x, int y, int color) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+            return NametagRenderer.drawNametagString(OmniRenderingContext.from(), text, x, y, new OmniColor(color));
+        } else {
             return original.call(instance);
         }
-
-        NametagRenderer.drawNametagString(OmniRenderingContext.from(), text, x, y, new OmniColor(color));
-        return 0;
     }
 
     @Dynamic("Levelhead")

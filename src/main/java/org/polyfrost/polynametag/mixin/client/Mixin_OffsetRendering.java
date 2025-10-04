@@ -10,11 +10,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class Mixin_OffsetRendering {
     @ModifyArg(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V", ordinal = 0), index = 1)
     private float polynametag$modifyTranslateY(float original) {
-        if (!PolyNametagConfig.isEnabled()) {
-            return original;
+        if (PolyNametagConfig.isEnabled()) {
+            original += PolyNametagConfig.getHeightOffset();
         }
 
-        float scaleFactor = 1f;
-        return original + PolyNametagConfig.getHeightOffset() * scaleFactor;
+        return original;
     }
 }

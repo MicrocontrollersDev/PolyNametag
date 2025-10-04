@@ -19,20 +19,18 @@ public class Mixin_EssentialIndicatorCompatibility {
     @Dynamic("Essential")
     @ModifyArgs(method = "drawNametagIndicator", at = @At(remap = false, value = "INVOKE", target = "Lgg/essential/render/TextRenderTypeVertexConsumer;color(IIII)Lgg/essential/render/TextRenderTypeVertexConsumer;"))
     private static void polyNametag$modifyNametagColor(Args args) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
-            return;
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+            args.set(3, 0);
         }
-
-        args.set(3, 0);
     }
 
     @Dynamic("Essential")
     @Inject(method = "drawNametagIndicator", at = @At("HEAD"), cancellable = true)
     private static void skip(UMatrixStack matrixStack, @Coerce Object entity, String str, int light, CallbackInfo ci) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled() || !NametagRenderer.INSTANCE.isDrawingIndicator() ) {
+        if (!PolyNametagConfig.INSTANCE.isEnabled() || !NametagRenderer.INSTANCE.isDrawingIndicator()) {
             return;
+        } else {
+            ci.cancel();
         }
-
-        ci.cancel();
     }
 }

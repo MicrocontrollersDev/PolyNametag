@@ -18,11 +18,8 @@ public abstract class Mixin_OverwritePatcherNametagTextRendering {
     @Dynamic("Patcher")
     @Inject(method = "drawNametagText", at = @At("HEAD"), remap = false, cancellable = true)
     private static void polyNametag$overwritePatcherDrawString(FontRenderer fontRenderer, String text, int x, int y, int color, CallbackInfoReturnable<Integer> cir) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled()) {
-            return;
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+            cir.setReturnValue(NametagRenderer.drawNametagString(OmniRenderingContext.from(), text, x, y, new OmniColor(color)));
         }
-
-        NametagRenderer.drawNametagString(OmniRenderingContext.from(), text, x, y, new OmniColor(color));
-        cir.setReturnValue(0);
     }
 }
