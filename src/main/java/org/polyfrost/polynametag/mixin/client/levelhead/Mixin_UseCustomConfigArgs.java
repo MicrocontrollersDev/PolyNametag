@@ -20,10 +20,10 @@ public abstract class Mixin_UseCustomConfigArgs {
     @ModifyArg(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics$GL;translate(FFF)V"), index = 1, remap = false)
     private float polyNametag$changeOffset(float original) {
         if (PolyNametagConfig.INSTANCE.isEnabled()) {
-            return original + PolyNametagConfig.INSTANCE.getHeightOffset();
-        } else {
-            return original;
+            original += PolyNametagConfig.INSTANCE.getHeightOffset();
         }
+
+        return original;
     }
 
     @Dynamic("LevelHead")
@@ -41,7 +41,7 @@ public abstract class Mixin_UseCustomConfigArgs {
     @ModifyArgs(method = "renderName", remap = false, at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;color(FFFF)Lgg/essential/universal/UGraphics;"))
     private void polyNametag$changeBackgroundColor(Args args) {
         if (PolyNametagConfig.INSTANCE.isEnabled()) {
-            args.set(3, 0f);
+            args.set(3, 0.0F);
         }
     }
 }

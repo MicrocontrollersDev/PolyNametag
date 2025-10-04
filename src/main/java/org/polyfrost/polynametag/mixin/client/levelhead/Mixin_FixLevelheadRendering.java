@@ -3,7 +3,7 @@ package org.polyfrost.polynametag.mixin.client.levelhead;
 import club.sk1er.mods.levelhead.display.LevelheadTag;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import dev.deftu.omnicore.api.client.render.OmniRenderingContext;
+import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
 import dev.deftu.omnicore.api.color.OmniColor;
 import net.minecraft.entity.player.EntityPlayer;
 import org.polyfrost.polynametag.client.NametagRenderer;
@@ -11,7 +11,9 @@ import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
@@ -21,17 +23,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Pseudo
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender", priority = 1001, remap = false)
 public abstract class Mixin_FixLevelheadRendering {
+    @Dynamic("Levelhead")
     @WrapOperation(
-        method = "render(Lnet/minecraft/client/gui/FontRenderer;Lclub/sk1er/mods/levelhead/display/LevelheadTag$LevelheadComponent;I)V",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I",
-            remap = true
-        )
-    ) @Dynamic("Levelhead")
+            method = "render(Lnet/minecraft/client/gui/FontRenderer;Lclub/sk1er/mods/levelhead/display/LevelheadTag$LevelheadComponent;I)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I",
+                    remap = true
+            )
+    )
     private int polynametag$fixStringRendering(@Coerce Object instance, Operation<Integer> original, String text, int x, int y, int color) {
-        if (PolyNametagConfig.INSTANCE.isEnabled()) {
-            return NametagRenderer.drawNametagString(OmniRenderingContext.from(), text, x, y, new OmniColor(color));
+        if (PolyNametagConfig.isEnabled()) {
+            return NametagRenderer.drawNametagString(OmniMatrixStacks.create(), text, x, y, new OmniColor(color));
         } else {
             return original.call(instance);
         }
@@ -41,15 +44,13 @@ public abstract class Mixin_FixLevelheadRendering {
     @Inject(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;drawDirect()V", shift = At.Shift.AFTER))
     private void polynametag$fixBackgroundRendering(LevelheadTag tag, EntityPlayer entityIn, double x, double y, double z, CallbackInfo ci) {
         // TODO
-//        if (!PolyNametagConfig.INSTANCE.getEnabled()) {
-//            return;
+//        if (PolyNametagConfig.INSTANCE.getEnabled()) {
+//              int stringWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(tag.getString()) / 2;
+//              NametagRenderingKt.drawFrontBackground(-stringWidth - 2, stringWidth + 1, PolyNametagConfig.INSTANCE.getBackgroundColor().red(), PolyNametagConfig.INSTANCE.getBackgroundColor().green(), PolyNametagConfig.INSTANCE.getBackgroundColor().blue(), NametagRenderingKt.getBackBackgroundAlpha(), entityIn);
+//              GlStateManager.enableDepth();
+//              NametagRenderingKt.setDrawingWithDepth(true);
+//              NametagRenderingKt.drawFrontBackground(-stringWidth - 2, stringWidth + 1, entityIn);
+//              GlStateManager.depthMask(true);
 //        }
-//
-//        int stringWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(tag.getString()) / 2;
-//        NametagRenderingKt.drawFrontBackground(-stringWidth - 2, stringWidth + 1, PolyNametagConfig.INSTANCE.getBackgroundColor().red(), PolyNametagConfig.INSTANCE.getBackgroundColor().green(), PolyNametagConfig.INSTANCE.getBackgroundColor().blue(), NametagRenderingKt.getBackBackgroundAlpha(), entityIn);
-//        GlStateManager.enableDepth();
-//        NametagRenderingKt.setDrawingWithDepth(true);
-//        NametagRenderingKt.drawFrontBackground(-stringWidth - 2, stringWidth + 1, entityIn);
-//        GlStateManager.depthMask(true);
     }
 }

@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(EntityRenderer.class)
-public class Mixin_ReplaceTextRendering<T extends Entity> {
+public abstract class Mixin_ReplaceTextRendering<T extends Entity> {
     @Redirect(
             method = "renderNameTag",
             at = @At(
@@ -45,14 +45,21 @@ public class Mixin_ReplaceTextRendering<T extends Entity> {
             //#endif
             int backgroundColor,
             int light,
-
             T entity,
             Component displayName,
             PoseStack matrices,
             MultiBufferSource outerBuffers,
             int outerPackedLight
     ) {
-        if (!PolyNametagConfig.isEnabled()) {
+        if (PolyNametagConfig.isEnabled()) {
+            return NametagRenderer.drawNametagString(
+                    OmniMatrixStacks.vanilla(matrices),
+                    content.getString(),
+                    x,
+                    y,
+                    new OmniColor(ColorFormat.ARGB, color)
+            );
+        } else {
             return instance.drawInBatch(
                     content,
                     x,
@@ -68,14 +75,6 @@ public class Mixin_ReplaceTextRendering<T extends Entity> {
                     //#endif
                     backgroundColor,
                     light
-            );
-        } else {
-            return NametagRenderer.drawNametagString(
-                    OmniMatrixStacks.vanilla(matrices),
-                    content.getString(),
-                    x,
-                    y,
-                    new OmniColor(ColorFormat.ARGB, color)
             );
         }
     }

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(Render.class)
-public class Mixin_OffsetRendering {
+public abstract class Mixin_OffsetRendering {
     @ModifyArg(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V", ordinal = 0), index = 1)
     private float polynametag$modifyTranslateY(float original) {
         if (PolyNametagConfig.isEnabled()) {

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
-public class Mixin_ReplaceTextRendering<T extends Entity> {
+public abstract class Mixin_ReplaceTextRendering<T extends Entity> {
     @Inject(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;method_13427(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;FFFIFFZZ)V"))
     private void polyweather$replaceTextRendering(T entity, String text, double x, double y, double z, int maxDistance, CallbackInfo ci) {
         if (PolyNametagConfig.isEnabled()) {
@@ -22,7 +22,13 @@ public class Mixin_ReplaceTextRendering<T extends Entity> {
                 color = color.withAlpha(32);
             }
 
-            NametagRenderer.drawNametagString(OmniMatrixStacks.create(), text, (float) x, (float) y, color);
+            NametagRenderer.drawNametagString(
+                    OmniMatrixStacks.create(),
+                    text,
+                    (float) x,
+                    (float) y,
+                    color
+            );
         }
     }
 }

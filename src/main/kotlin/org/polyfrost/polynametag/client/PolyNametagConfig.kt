@@ -12,15 +12,19 @@ import org.polyfrost.oneconfig.api.ui.v1.Notifications
 import org.polyfrost.polynametag.PolyNametagConstants
 import org.polyfrost.polyui.color.rgba
 
-object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynametag_dark.svg", PolyNametagConstants.NAME, Category.QOL) {
-    @JvmStatic @Switch(title = "Enabled")
+object PolyNametagConfig :
+    Config("nametag.json", "/assets/polynametag/polynametag_dark.svg", PolyNametagConstants.NAME, Category.QOL) {
+    @JvmStatic
+    @Switch(title = "Enabled")
     var isEnabled = true
 
-    @JvmStatic @Slider(title = "Height offset", min = -0.5f, max = 0.5f, description = "How much to offset the nametag vertically")
+    @JvmStatic
+    @Slider(title = "Height offset", min = -0.5f, max = 0.5f, description = "How much to offset the nametag vertically")
     var heightOffset = 0.5f // TODO: fix sliders in oneconfig
         get() = field.coerceIn(-0.5f, 0.5f)
 
-    @JvmStatic @Slider(title = "Scale", min = 0f, max = 1f, description = "How much to scale the nametag")
+    @JvmStatic
+    @Slider(title = "Scale", min = 0f, max = 1f, description = "How much to scale the nametag")
     var scale = 1f // TODO: fix sliders in oneconfig
         get() = field.coerceIn(0f, 1f)
 
@@ -36,7 +40,11 @@ object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynamet
     @Slider(title = "Padding Y", min = 0f, max = 10f)
     var paddingY = 0f
 
-    @Dropdown(title = "Text Type", options = ["No Shadow", "Shadow", "Full Shadow"], description = "The type of shadow to render")
+    @Dropdown(
+        title = "Text Type",
+        options = ["No Shadow", "Shadow", "Full Shadow"],
+        description = "The type of shadow to render"
+    )
     var textType = 0
 
     /*
@@ -47,10 +55,12 @@ object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynamet
     var info1 = 0
      */
 
-    @JvmStatic @Switch(title = "Show own nametag", description = "Whether to show your own nametag")
+    @JvmStatic
+    @Switch(title = "Show own nametag", description = "Whether to show your own nametag")
     var isShowOwnNametag = true
 
-    @JvmStatic @Switch(title = "Show in inventory")
+    @JvmStatic
+    @Switch(title = "Show in inventory")
     var isShowInInventory = false
 
     @Switch(title = "Background", description = "Whether to render a background behind the nametag")
@@ -107,7 +117,11 @@ object PolyNametagConfig : Config("nametag.json", "/assets/polynametag/polynamet
                 save()
 
                 if (didAnything) {
-                    Notifications.enqueue(Notifications.Type.Info, "PolyNametag", "Migrated Patcher settings replaced by PolyNametag. Please check PolyNametag's settings to make sure they are correct.")
+                    Notifications.enqueue(
+                        Notifications.Type.Info,
+                        "PolyNametag",
+                        "Migrated Patcher settings replaced by PolyNametag. Please check PolyNametag's settings to make sure they are correct."
+                    )
                 }
             } catch (_: ClassNotFoundException) {
 

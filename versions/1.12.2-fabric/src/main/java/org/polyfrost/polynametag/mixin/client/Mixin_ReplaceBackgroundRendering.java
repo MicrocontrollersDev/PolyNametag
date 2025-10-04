@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
-public class Mixin_ReplaceBackgroundRendering<T extends Entity> {
+public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
     @Inject(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;method_13427(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;FFFIFFZZ)V", shift = At.Shift.BEFORE), cancellable = true)
     private void polynametag$cancelBegin(T entity, String text, double x, double y, double z, int maxDistance, CallbackInfo ci) {
         if (PolyNametagConfig.isEnabled()) {

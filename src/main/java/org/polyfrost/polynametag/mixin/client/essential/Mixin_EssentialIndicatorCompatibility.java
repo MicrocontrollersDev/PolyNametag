@@ -1,5 +1,6 @@
 package org.polyfrost.polynametag.mixin.client.essential;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import gg.essential.universal.UMatrixStack;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
@@ -8,7 +9,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -19,18 +19,14 @@ public class Mixin_EssentialIndicatorCompatibility {
     @Dynamic("Essential")
     @ModifyArgs(method = "drawNametagIndicator", at = @At(remap = false, value = "INVOKE", target = "Lgg/essential/render/TextRenderTypeVertexConsumer;color(IIII)Lgg/essential/render/TextRenderTypeVertexConsumer;"))
     private static void polyNametag$modifyNametagColor(Args args) {
-        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+        if (PolyNametagConfig.isEnabled()) {
             args.set(3, 0);
         }
     }
 
     @Dynamic("Essential")
-    @Inject(method = "drawNametagIndicator", at = @At("HEAD"), cancellable = true)
-    private static void skip(UMatrixStack matrixStack, @Coerce Object entity, String str, int light, CallbackInfo ci) {
-        if (!PolyNametagConfig.INSTANCE.isEnabled() || !NametagRenderer.INSTANCE.isDrawingIndicator()) {
-            return;
-        } else {
-            ci.cancel();
-        }
+    @WrapWithCondition(method = "drawNametagIndicator", at = @At("HEAD"))
+    private static boolean skip(UMatrixStack matrixStack, @Coerce Object entity, String str, int light) {
+        return !PolyNametagConfig.isEnabled() || !NametagRenderer.INSTANCE.isDrawingIndicator();
     }
 }

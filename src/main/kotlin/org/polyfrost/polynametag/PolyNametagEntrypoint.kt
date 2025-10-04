@@ -47,7 +47,7 @@ class PolyNametagEntrypoint
     //#endif
     fun onInitializeClient(
         //#if FORGE && MC <= 1.12.2
-        event: FMLInitializationEvent
+        event: FMLInitializationEvent,
         //#endif
     ) {
         //#if FORGE && MC <= 1.12.2

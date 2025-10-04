@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = EntityRenderer.class, priority = 999)
-public class Mixin_ReplaceBackgroundRendering<T extends Entity> {
+public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
     @Inject(
             method = "renderNameTag",
             at = @At(

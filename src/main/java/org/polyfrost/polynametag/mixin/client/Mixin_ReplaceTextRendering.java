@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Render.class)
-public class Mixin_ReplaceTextRendering {
+public abstract class Mixin_ReplaceTextRendering {
     @WrapOperation(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"))
     private int polyweather$replaceTextRendering(FontRenderer instance, String text, int x, int y, int color, Operation<Integer> original) {
         if (PolyNametagConfig.isEnabled()) {

@@ -1,6 +1,6 @@
 package org.polyfrost.polynametag.mixin.client.patcher;
 
-import dev.deftu.omnicore.api.client.render.OmniRenderingContext;
+import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
 import dev.deftu.omnicore.api.color.OmniColor;
 import net.minecraft.client.gui.FontRenderer;
 import org.polyfrost.polynametag.client.NametagRenderer;
@@ -18,8 +18,8 @@ public abstract class Mixin_OverwritePatcherNametagTextRendering {
     @Dynamic("Patcher")
     @Inject(method = "drawNametagText", at = @At("HEAD"), remap = false, cancellable = true)
     private static void polyNametag$overwritePatcherDrawString(FontRenderer fontRenderer, String text, int x, int y, int color, CallbackInfoReturnable<Integer> cir) {
-        if (PolyNametagConfig.INSTANCE.isEnabled()) {
-            cir.setReturnValue(NametagRenderer.drawNametagString(OmniRenderingContext.from(), text, x, y, new OmniColor(color)));
+        if (PolyNametagConfig.isEnabled()) {
+            cir.setReturnValue(NametagRenderer.drawNametagString(OmniMatrixStacks.create(), text, x, y, new OmniColor(color)));
         }
     }
 }
