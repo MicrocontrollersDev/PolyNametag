@@ -53,6 +53,8 @@ fun drawBackground(xStart: Double, xEnd: Double, red: Int, green: Int, blue: Int
     if (!ModConfig.enabled) return
     if (!shouldDrawBackground()) return
     val realStart = xStart - if (PolyNametag.shouldDrawIndicator) 10 else 0
+    GlStateManager.enableBlend()
+    GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
     GL11.glEnable(GL11.GL_LINE_SMOOTH)
     GlStateManager.disableTexture2D()
     GL11.glPushMatrix()
