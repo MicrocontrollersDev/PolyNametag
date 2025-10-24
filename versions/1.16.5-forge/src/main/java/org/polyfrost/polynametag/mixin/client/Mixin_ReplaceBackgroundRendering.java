@@ -40,7 +40,7 @@ public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
             Matrix4f matrix4f,
             MultiBufferSource bufferSource,
             //#if MC >=1.20.1
-            //$$ Font.DisplayMode displayMode,
+            //$$ TextRenderer.TextLayerType displayMode,
             //#else
             boolean displayMode,
             //#endif
