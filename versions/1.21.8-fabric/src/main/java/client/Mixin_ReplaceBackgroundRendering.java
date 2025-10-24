@@ -1,4 +1,4 @@
-package org.polyfrost.polynametag.mixin.client;
+package client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -18,39 +18,39 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = EntityRenderer.class, priority = 999)
-public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
-    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
-    private int polynametag$cancelBegin(
+public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity, S extends EntityRenderState> {
+    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZL;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)V"))
+    private void polynametag$cancelBegin(
             TextRenderer instance,
-            Text arg,
-            float f,
-            float g,
+            Text text,
+            float x,
+            float y,
             int i,
             boolean bl,
             Matrix4f matrix4f,
-            VertexConsumerProvider bufferSource,
-            TextRenderer.TextLayerType displayMode,
-            int x,
-            int y,
-            Operation<Integer> original,
-            @Local(argsOnly = true) MatrixStack pose,
-            @Local(argsOnly = true) EntityRenderState entityRenderState
+            VertexConsumerProvider vertexConsumerProvider,
+            TextRenderer.TextLayerType textLayerType,
+            int backgroundColor,
+            int light,
+            Operation<Void> original,
+            @Local(argsOnly = true) MatrixStack matrices,
+            @Local(argsOnly = true) S entityRenderState
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(pose), entityRenderState);
-            return 0;
+            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(matrices), entityRenderState);
         } else {
-            return original.call(
+            original.call(
                     instance,
-                    arg,
-                    f,
-                    g,
+                    text,
+                    x,
+                    y,
                     i,
                     bl,
                     matrix4f,
-                    bufferSource,
-                    displayMode,
-                    x, y
+                    vertexConsumerProvider,
+                    textLayerType,
+                    backgroundColor,
+                    light
             );
         }
     }

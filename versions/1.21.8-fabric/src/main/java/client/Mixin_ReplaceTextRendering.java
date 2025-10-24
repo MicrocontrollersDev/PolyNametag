@@ -1,0 +1,59 @@
+package client;
+
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
+import dev.deftu.omnicore.api.color.ColorFormat;
+import dev.deftu.omnicore.api.color.OmniColor;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+import org.joml.Matrix4f;
+import org.polyfrost.polynametag.client.NametagRenderer;
+import org.polyfrost.polynametag.client.PolyNametagConfig;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.w3c.dom.Text;
+
+@Mixin(EntityRenderer.class)
+public abstract class Mixin_ReplaceTextRendering<T extends Entity, S extends EntityRenderState> {
+    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
+    private void polynametag$replaceTextRendering(
+            TextRenderer instance,
+            Text text,
+            float x,
+            float y,
+            int color,
+            boolean shadow,
+            Matrix4f matrix,
+            VertexConsumerProvider vertexConsumerProvider,
+            TextRenderer.TextLayerType textLayerType,
+            int backgroundColor,
+            int light,
+            Operation<Void> original,
+            @Local(argsOnly = true) MatrixStack matrices,
+            @Local(argsOnly = true) S entityRenderState
+    ) {
+        if (PolyNametagConfig.isEnabled()) {
+            NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrices), text.getTextContent(), x, y, new OmniColor(ColorFormat.ARGB, color));
+        } else {
+            original.call(
+                    instance,
+                    text,
+                    x,
+                    y,
+                    color,
+                    shadow,
+                    matrix,
+                    vertexConsumerProvider,
+                    textLayerType,
+                    backgroundColor,
+                    light
+            );
+        }
+    }
+}
