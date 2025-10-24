@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Pseudo
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender", priority = 1001, remap = false)
 public abstract class Mixin_FixLevelheadRendering {
-    @Dynamic("Levelhead")
+    @Dynamic("LevelHead")
     @WrapOperation(
             method = "render(Lnet/minecraft/client/gui/FontRenderer;Lclub/sk1er/mods/levelhead/display/LevelheadTag$LevelheadComponent;I)V",
             at = @At(
@@ -40,17 +40,17 @@ public abstract class Mixin_FixLevelheadRendering {
         }
     }
 
-    @Dynamic("Levelhead")
+    @Dynamic("LevelHead")
     @Inject(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;drawDirect()V", shift = At.Shift.AFTER))
     private void polynametag$fixBackgroundRendering(LevelheadTag tag, EntityPlayer entityIn, double x, double y, double z, CallbackInfo ci) {
-        // TODO
-//        if (PolyNametagConfig.INSTANCE.getEnabled()) {
+        if (PolyNametagConfig.INSTANCE.isEnabled()) {
+            // TODO
 //              int stringWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(tag.getString()) / 2;
 //              NametagRenderingKt.drawFrontBackground(-stringWidth - 2, stringWidth + 1, PolyNametagConfig.INSTANCE.getBackgroundColor().red(), PolyNametagConfig.INSTANCE.getBackgroundColor().green(), PolyNametagConfig.INSTANCE.getBackgroundColor().blue(), NametagRenderingKt.getBackBackgroundAlpha(), entityIn);
 //              GlStateManager.enableDepth();
 //              NametagRenderingKt.setDrawingWithDepth(true);
 //              NametagRenderingKt.drawFrontBackground(-stringWidth - 2, stringWidth + 1, entityIn);
 //              GlStateManager.depthMask(true);
-//        }
+        }
     }
 }

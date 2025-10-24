@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class Mixin_ApplyScaling {
     @ModifyArgs(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;scale(FFF)V"))
     private void polynametag$applyScaling(Args args) {
-        float scale = PolyNametagConfig.getScale();
+        final float scale = PolyNametagConfig.getScale();
         args.set(0, ((float) args.get(0)) * scale);
         args.set(1, ((float) args.get(1)) * scale);
         args.set(2, ((float) args.get(2)) * scale);

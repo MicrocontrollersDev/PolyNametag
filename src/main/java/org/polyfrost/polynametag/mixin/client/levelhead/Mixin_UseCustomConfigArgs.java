@@ -30,7 +30,7 @@ public abstract class Mixin_UseCustomConfigArgs {
     @ModifyArgs(method = "renderName", at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics$GL;scale(DDD)V"), remap = false)
     private void polyNametag$changeScale(Args args) {
         if (PolyNametagConfig.INSTANCE.isEnabled()) {
-            double scale = PolyNametagConfig.INSTANCE.getScale();
+            final double scale = PolyNametagConfig.INSTANCE.getScale();
             args.set(0, ((double) args.get(0)) * scale);
             args.set(1, ((double) args.get(1)) * scale);
             args.set(2, ((double) args.get(2)) * scale);
