@@ -94,13 +94,7 @@ object NametagRenderer {
     //$$     entityRenderState: net.minecraft.client.render.entity.state.EntityRenderState,
     //$$ ) {
     //$$     val displayName = entityRenderState.displayName ?: return
-    //$$     val halfWidth = OmniTextRenderer.width(
-    //$$         //#if MC >= 1.16.5
-    //$$         //$$ displayName.string
-    //$$         //#else
-    //$$         displayName.formattedText
-    //$$         //#endif
-    //$$     ) / 2 + 1.0
+    //$$     val halfWidth = OmniTextRenderer.width(displayName.string) / 2 + 1.0
     //$$     drawBackground(matrices, -halfWidth, halfWidth, 0.0F)
     //$$ }
     //#endif
