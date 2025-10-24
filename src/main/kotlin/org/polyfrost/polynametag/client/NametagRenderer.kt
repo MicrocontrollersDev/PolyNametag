@@ -27,7 +27,7 @@ object NametagRenderer {
     fun drawBackground(
         matrices: OmniMatrixStack,
         x1: Double, x2: Double,
-        entity: Entity,
+        leftPad: Float
     ) {
         if (!PolyNametagConfig.background) {
             return
@@ -36,7 +36,6 @@ object NametagRenderer {
         matrices.with {
             val baselineY = 3.5F
 
-            val leftPad = if (canDrawEssentialIndicator(entity)) 10.0F else 0.0F
             val realX1 = (x1.toFloat() - leftPad)
             val realX2 = x2.toFloat()
             val span = (realX2 - realX1).coerceAtLeast(0.0F)
@@ -84,8 +83,27 @@ object NametagRenderer {
             displayName.formattedText
             //#endif
         ) / 2 + 1.0
-        drawBackground(matrices, -halfWidth, halfWidth, entity)
+        val leftPad = if (canDrawEssentialIndicator(entity)) 10.0F else 0.0F
+        drawBackground(matrices, -halfWidth, halfWidth, leftPad)
     }
+
+    //#if MC >=1.21.2
+    //$$ @JvmStatic
+    //$$ fun drawBackground(
+    //$$     matrices: OmniMatrixStack,
+    //$$     entityRenderState: net.minecraft.client.render.entity.state.EntityRenderState,
+    //$$ ) {
+    //$$     val displayName = entityRenderState.displayName ?: return
+    //$$     val halfWidth = OmniTextRenderer.width(
+    //$$         //#if MC >= 1.16.5
+    //$$         //$$ displayName.string
+    //$$         //#else
+    //$$         displayName.formattedText
+    //$$         //#endif
+    //$$     ) / 2 + 1.0
+    //$$     drawBackground(matrices, -halfWidth, halfWidth, 0.0F)
+    //$$ }
+    //#endif
 
     @JvmStatic
     fun drawNametagString(
