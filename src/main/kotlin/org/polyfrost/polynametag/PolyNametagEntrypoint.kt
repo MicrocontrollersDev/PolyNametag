@@ -16,6 +16,10 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 //$$ import net.neoforged.fml.common.Mod
 //#endif
 
+//#if FORGE-LIKE
+//$$ import dev.deftu.omnicore.api.loader.OmniLoader
+//#endif
+
 import org.polyfrost.polynametag.client.PolyNametagClient
 
 //#if FORGE-LIKE
