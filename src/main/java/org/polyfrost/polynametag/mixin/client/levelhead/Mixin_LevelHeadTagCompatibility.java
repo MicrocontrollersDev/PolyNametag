@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
  */
 @Pseudo
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender", priority = 1001, remap = false)
-public abstract class Mixin_LevelheadTagCompatibility {
+public abstract class Mixin_LevelHeadTagCompatibility {
     @Dynamic("LevelHead")
     @Redirect(
             method = "render(Lnet/minecraftforge/client/event/RenderLivingEvent$Specials$Post;)V",

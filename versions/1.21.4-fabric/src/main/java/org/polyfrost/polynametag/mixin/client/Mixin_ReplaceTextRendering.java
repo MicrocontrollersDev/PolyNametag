@@ -1,15 +1,16 @@
 package org.polyfrost.polynametag.mixin.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Matrix4f;
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
 import dev.deftu.omnicore.api.color.ColorFormat;
 import dev.deftu.omnicore.api.color.OmniColor;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.text.Text;
+import net.minecraft.entity.Entity;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,39 +20,35 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(EntityRenderer.class)
 public abstract class Mixin_ReplaceTextRendering<T extends Entity> {
     @Redirect(
-            method = "renderNameTag",
+            method = "renderLabelIfPresent",
             at = @At(
                     value = "INVOKE",
                     //#if MC >=1.21.6
                     //$$ target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;L;II)V"
                     //#elseif MC >= 1.20.1
-                    //$$ target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"
+                    target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"
                     //#else
-                    target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZII)I"
+                    //$$ target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"
                     //#endif
             )
     )
     private int polynametag$replaceTextRendering(
-            Font instance,
-            Component content,
+            TextRenderer instance,
+            Text content,
             float x,
             float y,
             int color,
             boolean shadow,
             Matrix4f matrix,
-            MultiBufferSource buffer,
+            VertexConsumerProvider buffer,
             //#if MC >= 1.20.1
-            //$$ TextRenderer.TextLayerType textLayerType,
+            TextRenderer.TextLayerType textLayerType,
             //#else
-            boolean seeThrough,
+            //$$ boolean seeThrough,
             //#endif
             int backgroundColor,
             int light,
-            T entity,
-            Component displayName,
-            PoseStack matrices,
-            MultiBufferSource outerBuffers,
-            int outerPackedLight
+            @Local(argsOnly = true) MatrixStack matrices
     ) {
         if (PolyNametagConfig.isEnabled()) {
             return NametagRenderer.drawNametagString(
@@ -62,7 +59,7 @@ public abstract class Mixin_ReplaceTextRendering<T extends Entity> {
                     new OmniColor(ColorFormat.ARGB, color)
             );
         } else {
-            return instance.drawInBatch(
+            return instance.draw(
                     content,
                     x,
                     y,
@@ -71,9 +68,9 @@ public abstract class Mixin_ReplaceTextRendering<T extends Entity> {
                     matrix,
                     buffer,
                     //#if MC >= 1.20.1
-                    //$$ textLayerType,
+                    textLayerType,
                     //#else
-                    seeThrough,
+                    //$$ seeThrough,
                     //#endif
                     backgroundColor,
                     light
