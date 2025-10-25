@@ -47,14 +47,6 @@ object PolyNametagConfig :
     )
     var textType = 0
 
-    /*
-    @Info(
-        type = InfoType.WARNING,
-        text = "Using Full Shadow may cause performance issues on low-end devices"
-    )
-    var info1 = 0
-     */
-
     @JvmStatic
     @Switch(title = "Show own nametag", description = "Whether to show your own nametag")
     var isShowOwnNametag = true
@@ -68,12 +60,6 @@ object PolyNametagConfig :
 
     @Color(title = "Background color", description = "The color of the background")
     var backgroundColor = rgba(0, 0, 0, 0.247F) // 0,0,0,63
-
-    /*
-    @CustomOption
-    @Transient
-    val nametagPreview = NametagPreview(category = "General")
-     */
 
     private var hasMigratedPatcher = false
 
@@ -128,16 +114,4 @@ object PolyNametagConfig :
             }
         }
     }
-
-    /*
-    override fun getCustomOption(
-        field: Field,
-        annotation: CustomOption,
-        page: OptionPage,
-        mod: Mod,
-        migrate: Boolean,
-    ): BasicOption = nametagPreview.also {
-        ConfigUtils.getSubCategory(page, it.category, it.subcategory).options.add(it)
-    }
-     */
 }

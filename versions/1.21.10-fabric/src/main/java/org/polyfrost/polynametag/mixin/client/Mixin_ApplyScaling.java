@@ -1,6 +1,6 @@
 package org.polyfrost.polynametag.mixin.client;
 
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(EntityRenderer.class)
 public abstract class Mixin_ApplyScaling {
-    @ModifyArgs(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;scale(FFF)V"))
+    @ModifyArgs(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;scale(FFF)V"))
     private void polynametag$applyScaling(Args args) {
         if (PolyNametagConfig.isEnabled()) {
             final float scale = PolyNametagConfig.getScale();
