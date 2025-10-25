@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class Mixin_ShowInInventory<T extends Entity> {
     @WrapMethod(method = "renderLivingLabel")
     private void polynametag$checkInventory(T entity, String str, double x, double y, double z, int maxDistance, Operation<Void> original) {
-        if (!PolyNametagConfig.isEnabled() || PolyNametagConfig.isShowOwnNametag() || !PolyNametagConfig.isShowInInventory() || !OmniScreens.isCurrentScreen(GuiInventory.class)) {
+        if (!PolyNametagConfig.isEnabled() || PolyNametagConfig.isShowInInventory() || !OmniScreens.isCurrentScreen(GuiInventory.class)) {
             original.call(entity, str, x, y, z, maxDistance);
         }
     }
