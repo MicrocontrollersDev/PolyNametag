@@ -19,26 +19,26 @@ object PolyNametagConfig :
     var isEnabled = true
 
     @JvmStatic
-    @Slider(title = "Height offset", min = -0.5f, max = 0.5f, description = "How much to offset the nametag vertically")
-    var heightOffset = 0.5f // TODO: fix sliders in oneconfig
-        get() = field.coerceIn(-0.5f, 0.5f)
+    @Slider(title = "Height offset", min = -0.5F, max = 0.5F, description = "How much to offset the nametag vertically")
+    var heightOffset = 0.0F
+        get() = field.coerceIn(-0.5F, 0.5F)
 
     @JvmStatic
-    @Slider(title = "Scale", min = 0f, max = 1f, description = "How much to scale the nametag")
-    var scale = 1f // TODO: fix sliders in oneconfig
-        get() = field.coerceIn(0f, 1f)
+    @Slider(title = "Scale", min = 0.0F, max = 1.0F, description = "How much to scale the nametag")
+    var scale = 1.0F
+        get() = field.coerceIn(0.0F, 1.0F)
 
     @Switch(title = "Rounded Corners")
     var rounded = false
 
-    @Slider(title = "Corner Radius", min = 0f, max = 10f)
-    var cornerRadius = 0f
+    @Slider(title = "Corner Radius", min = 0.0F, max = 10.0F)
+    var cornerRadius = 0.0F
 
-    @Slider(title = "Padding X", min = 0f, max = 10f)
-    var paddingX = 0f
+    @Slider(title = "Padding X", min = 0.0F, max = 10.0F)
+    var paddingX = 0.0F
 
-    @Slider(title = "Padding Y", min = 0f, max = 10f)
-    var paddingY = 0f
+    @Slider(title = "Padding Y", min = 0.0F, max = 10.0F)
+    var paddingY = 0.0F
 
     @Dropdown(
         title = "Text Type",
