@@ -7,6 +7,7 @@ import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.vertex.roundedQuad
 import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.omnicore.api.color.OmniColors
 import gg.essential.universal.UMatrixStack
 import net.minecraft.client.entity.AbstractClientPlayer
 import net.minecraft.entity.Entity
@@ -27,7 +28,7 @@ object NametagRenderer {
     fun drawBackground(
         matrices: OmniMatrixStack,
         x1: Double, x2: Double,
-        leftPad: Float
+        leftPad: Float,
     ) {
         if (!PolyNametagConfig.background) {
             return
@@ -112,7 +113,7 @@ object NametagRenderer {
                 matrices, text, x, y, color, when (PolyNametagConfig.textType) {
                     0 -> TextShadowType.None
                     1 -> TextShadowType.Drop
-                    2 -> TextShadowType.Outline(OmniColor((color.alpha / 4 shl 24)))
+                    2 -> TextShadowType.Outline(OmniColors.BLACK.withAlpha(color.alpha))
                     else -> throw IllegalStateException("Unexpected value: ${PolyNametagConfig.textType}")
                 }
             )
