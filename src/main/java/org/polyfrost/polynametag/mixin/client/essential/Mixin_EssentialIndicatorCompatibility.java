@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Pseudo
 @Mixin(targets = "gg.essential.handlers.OnlineIndicator")
-public class Mixin_EssentialIndicatorCompatibility {
+public abstract class Mixin_EssentialIndicatorCompatibility {
     @Dynamic("Essential")
     @ModifyArgs(method = "drawNametagIndicator", at = @At(remap = false, value = "INVOKE", target = "Lgg/essential/render/TextRenderTypeVertexConsumer;color(IIII)Lgg/essential/render/TextRenderTypeVertexConsumer;"))
     private static void polyNametag$modifyNametagColor(Args args) {

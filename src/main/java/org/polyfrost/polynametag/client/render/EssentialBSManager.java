@@ -9,7 +9,6 @@ import org.polyfrost.polynametag.client.render.icon.EssentialIconRender;
 import java.util.UUID;
 
 public class EssentialBSManager {
-
     public enum IconRenderType {
         NONE,
         PRE_1354,
@@ -117,7 +116,8 @@ public class EssentialBSManager {
     public boolean canDrawIndicator(Entity entity) {
         if (iconRender != null) {
             return iconRender.canDrawIndicator(entity);
+        } else {
+            return false;
         }
-        return false;
     }
 }

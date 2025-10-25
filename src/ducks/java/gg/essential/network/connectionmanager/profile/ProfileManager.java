@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public class ProfileManager {
-
     public ProfileStatus getStatus(@NotNull UUID uuid) {
         return null;
     }
