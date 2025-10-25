@@ -1,4 +1,4 @@
-package client;
+package org.polyfrost.polynametag.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = EntityRenderer.class, priority = 999)
 public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity, S extends EntityRenderState> {
-    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZL;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)V"))
+    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZL;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)V", ordinal = 0))
     private void polynametag$cancelBegin(
             TextRenderer instance,
             Text text,
