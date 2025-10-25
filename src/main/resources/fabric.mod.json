@@ -12,6 +12,8 @@
         "sources": "https://github.com/Polyfrost/PolyNametag",
         "issues": "https://github.com/Polyfrost/PolyNametag/issues"
     },
+    "license": "GPL-3.0",
+    "environment": "client",
     "entrypoints": {
         "client": [
             {
@@ -21,7 +23,5 @@
     },
     "mixins": [
         "mixins.${mod_id}.json"
-    ],
-    "license": "GPL-3.0",
-    "environment": "client"
+    ]
 }

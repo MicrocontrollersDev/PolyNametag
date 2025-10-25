@@ -1,6 +1,8 @@
 package org.polyfrost.polynametag.mixin.client;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
 import net.minecraft.client.renderer.Tessellator;
@@ -12,7 +14,6 @@ import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Render.class)
 public abstract class Mixin_ReplaceBackgroundRendering {
@@ -26,12 +27,12 @@ public abstract class Mixin_ReplaceBackgroundRendering {
         return !PolyNametagConfig.isEnabled();
     }
 
-    @Redirect(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
-    private void polynametag$replaceBackgroundRendering(Tessellator instance, @Local(argsOnly = true) Entity entity) {
-//        if (PolyNametagConfig.isEnabled()) {
-//        NametagRenderer.drawBackground(OmniMatrixStacks.create(), entity);
-//        } else {
-//            instance.draw();
-//        }
+    @WrapOperation(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
+    private void polynametag$replaceBackgroundRendering(Tessellator instance, Operation<Void> original, @Local(argsOnly = true) Entity entity) {
+        if (PolyNametagConfig.isEnabled()) {
+            NametagRenderer.drawBackground(OmniMatrixStacks.create(), entity);
+        } else {
+            original.call(instance);
+        }
     }
 }
