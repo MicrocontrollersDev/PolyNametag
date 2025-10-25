@@ -12,16 +12,16 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.w3c.dom.Text;
 
 @Mixin(EntityRenderer.class)
 public abstract class Mixin_ReplaceTextRendering<T extends Entity, S extends EntityRenderState> {
-    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZL;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)V", ordinal = 1))
+    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)V", ordinal = 1))
     private void polynametag$replaceTextRendering(
             TextRenderer instance,
             Text text,
@@ -29,7 +29,7 @@ public abstract class Mixin_ReplaceTextRendering<T extends Entity, S extends Ent
             float y,
             int color,
             boolean shadow,
-            Matrix4f matrix,
+            Matrix4f matrix4f,
             VertexConsumerProvider vertexConsumerProvider,
             TextRenderer.TextLayerType textLayerType,
             int backgroundColor,
@@ -39,7 +39,7 @@ public abstract class Mixin_ReplaceTextRendering<T extends Entity, S extends Ent
             @Local(argsOnly = true) S entityRenderState
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrices), text.getTextContent(), x, y, new OmniColor(ColorFormat.ARGB, color));
+            NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrices), text.getString(), x, y, new OmniColor(ColorFormat.ARGB, color));
         } else {
             original.call(
                     instance,
@@ -48,7 +48,7 @@ public abstract class Mixin_ReplaceTextRendering<T extends Entity, S extends Ent
                     y,
                     color,
                     shadow,
-                    matrix,
+                    matrix4f,
                     vertexConsumerProvider,
                     textLayerType,
                     backgroundColor,
