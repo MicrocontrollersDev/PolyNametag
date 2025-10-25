@@ -7,7 +7,6 @@ import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
@@ -20,37 +19,37 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(value = EntityRenderer.class, priority = 999)
 public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
     @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
-    private int polynametag$cancelBegin(
+    private int polynametag$renderCustomBackground(
             TextRenderer instance,
-            Text arg,
-            float f,
-            float g,
-            int i,
-            boolean bl,
+            Text text,
+            float x,
+            float y,
+            int color,
+            boolean shadow,
             Matrix4f matrix4f,
-            VertexConsumerProvider bufferSource,
-            TextRenderer.TextLayerType displayMode,
-            int x,
-            int y,
+            VertexConsumerProvider vertexConsumerProvider,
+            TextRenderer.TextLayerType textLayerType,
+            int backgroundColor,
+            int light,
             Operation<Integer> original,
-            @Local(argsOnly = true) MatrixStack pose,
-            @Local(argsOnly = true) EntityRenderState entityRenderState
+            @Local(argsOnly = true) MatrixStack matrixStack
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(pose), entityRenderState);
+            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(matrixStack), text);
             return 0;
         } else {
             return original.call(
                     instance,
-                    arg,
-                    f,
-                    g,
-                    i,
-                    bl,
+                    text,
+                    x,
+                    y,
+                    color,
+                    shadow,
                     matrix4f,
-                    bufferSource,
-                    displayMode,
-                    x, y
+                    vertexConsumerProvider,
+                    textLayerType,
+                    backgroundColor,
+                    light
             );
         }
     }

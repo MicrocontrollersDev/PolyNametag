@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(value = EntityRenderer.class, priority = 999)
 public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity, S extends EntityRenderState> {
     @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)V", ordinal = 0))
-    private void polynametag$cancelBegin(
+    private void polynametag$renderCustomBackground(
             TextRenderer instance,
             Text text,
             float x,
@@ -33,11 +33,10 @@ public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity, S exten
             int backgroundColor,
             int light,
             Operation<Void> original,
-            @Local(argsOnly = true) MatrixStack matrices,
-            @Local(argsOnly = true) S entityRenderState
+            @Local(argsOnly = true) MatrixStack matrices
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(matrices), entityRenderState);
+            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(matrices), text);
         } else {
             original.call(
                     instance,

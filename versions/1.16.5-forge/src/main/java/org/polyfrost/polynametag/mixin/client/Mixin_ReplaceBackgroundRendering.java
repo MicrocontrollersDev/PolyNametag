@@ -18,53 +18,39 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = EntityRenderer.class, priority = 999)
 public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
-    @WrapOperation(
-            method = "renderNameTag",
-            at = @At(
-                    value = "INVOKE",
-                    //#if MC >= 1.20.1
-                    //$$ target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I",
-                    //#else
-                    target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZII)I",
-                    //#endif
-                    ordinal = 0
-            )
-    )
-    private int polynametag$cancelBegin(
+    @WrapOperation(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZII)I", ordinal = 0))
+    private int polynametag$renderCustomBackground(
             Font instance,
-            Component arg,
-            float f,
-            float g,
-            int i,
-            boolean bl,
+            Component text,
+            float x,
+            float y,
+            int color,
+            boolean shadow,
             Matrix4f matrix4f,
-            MultiBufferSource bufferSource,
-            //#if MC >=1.20.1
-            //$$ TextRenderer.TextLayerType displayMode,
-            //#else
-            boolean displayMode,
-            //#endif
-            int x,
-            int y,
+            MultiBufferSource multiBufferSource,
+            boolean unknownArgument,
+            int backgroundColor,
+            int light,
             Operation<Integer> original,
-            @Local(argsOnly = true) PoseStack pose,
+            @Local(argsOnly = true) PoseStack poseStack,
             @Local(argsOnly = true) Entity entity
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(pose), entity);
+            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(poseStack), entity);
             return 0;
         } else {
             return original.call(
                     instance,
-                    arg,
-                    f,
-                    g,
-                    i,
-                    bl,
+                    text,
+                    x,
+                    y,
+                    color,
+                    shadow,
                     matrix4f,
-                    bufferSource,
-                    displayMode,
-                    x, y
+                    multiBufferSource,
+                    unknownArgument,
+                    backgroundColor,
+                    light
             );
         }
     }

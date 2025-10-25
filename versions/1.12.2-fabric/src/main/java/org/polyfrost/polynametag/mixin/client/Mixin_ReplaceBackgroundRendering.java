@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(EntityRenderer.class)
 public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
     @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;method_13427(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;FFFIFFZZ)V", shift = At.Shift.BEFORE))
-    private void polynametag$cancelBegin(T entity, String text, double x, double y, double z, int maxDistance, Operation<Void> original) {
+    private void polynametag$renderCustomBackground(T entity, String text, double x, double y, double z, int maxDistance, Operation<Void> original) {
         if (PolyNametagConfig.isEnabled()) {
             NametagRenderer.drawBackground(OmniMatrixStacks.create(), entity);
         } else {

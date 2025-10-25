@@ -92,9 +92,9 @@ object NametagRenderer {
     //$$ @JvmStatic
     //$$ fun drawBackground(
     //$$     matrices: OmniMatrixStack,
-    //$$     entityRenderState: net.minecraft.client.render.entity.state.EntityRenderState,
+    //$$     displayName: net.minecraft.text.Text?,
     //$$ ) {
-    //$$     val displayName = entityRenderState.displayName ?: return
+    //$$     val displayName = displayName ?: return
     //$$     val halfWidth = OmniTextRenderer.width(displayName.string) / 2 + 1.0
     //$$     drawBackground(matrices, -halfWidth, halfWidth, 0.0F)
     //$$ }
