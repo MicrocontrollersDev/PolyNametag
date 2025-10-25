@@ -9,6 +9,7 @@
 	"client": [
 		"client.Mixin_ApplyScaling",
 		"client.Mixin_EnableSelfNametag",
+		"client.Mixin_OffsetRendering",
 		"client.Mixin_ReplaceBackgroundRendering",
 		"client.Mixin_ReplaceTextRendering",
 		"client.Mixin_ShowInInventory",
