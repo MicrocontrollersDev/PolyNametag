@@ -3,8 +3,6 @@ package org.polyfrost.polynametag.mixin.client;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack;
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.command.LabelCommandRenderer;
@@ -13,6 +11,7 @@ import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
+import org.polyfrost.polynametag.LabelCommandMatrix;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,9 +36,7 @@ public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity, S exten
             @Local OrderedRenderCommandQueueImpl.LabelCommand labelCommand
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            // TODO/FIX
-            OmniMatrixStack matrixStack = OmniMatrixStacks.create();
-            NametagRenderer.drawBackground(matrixStack, text);
+            NametagRenderer.drawBackground(((LabelCommandMatrix) (Object) labelCommand).polynametag$getMatrixStack(), text);
         } else {
             original.call(
                     instance,
