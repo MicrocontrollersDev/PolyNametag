@@ -28,7 +28,7 @@ object NametagRenderer {
     fun drawBackground(
         matrices: OmniMatrixStack,
         x1: Double, x2: Double,
-        leftPad: Float,
+        leftPad: Float = 0.0F,
     ) {
         if (!PolyNametagConfig.background) {
             return
@@ -36,7 +36,6 @@ object NametagRenderer {
 
         matrices.with {
             val baselineY = 3.5F
-
             val realX1 = (x1.toFloat() - leftPad)
             val realX2 = x2.toFloat()
             val span = (realX2 - realX1).coerceAtLeast(0.0F)
@@ -96,7 +95,7 @@ object NametagRenderer {
     //$$ ) {
     //$$     val displayName = displayName ?: return
     //$$     val halfWidth = OmniTextRenderer.width(displayName.string) / 2 + 1.0
-    //$$     drawBackground(matrices, -halfWidth, halfWidth, 0.0F)
+    //$$     drawBackground(matrices, -halfWidth, halfWidth)
     //$$ }
     //#endif
 
