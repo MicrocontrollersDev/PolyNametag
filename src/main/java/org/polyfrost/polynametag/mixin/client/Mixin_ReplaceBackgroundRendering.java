@@ -50,7 +50,11 @@ public abstract class Mixin_ReplaceBackgroundRendering {
     }
 
     @WrapOperation(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()V"))
-    private void polynametag$replaceBackgroundRendering(Tessellator instance, Operation<Void> original, @Local(argsOnly = true) Entity entity) {
+    private void polynametag$replaceBackgroundRendering(
+            Tessellator instance,
+            Operation<Void> original,
+            @Local(argsOnly = true) Entity entity
+    ) {
         if (PolyNametagConfig.isEnabled()) {
             NametagRenderer.drawBackground(OmniMatrixStacks.create(), entity);
         } else {
