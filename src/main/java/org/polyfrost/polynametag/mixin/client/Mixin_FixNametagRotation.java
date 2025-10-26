@@ -1,5 +1,6 @@
 package org.polyfrost.polynametag.mixin.client;
 
+import dev.deftu.omnicore.api.client.options.OmniPerspective;
 import net.minecraft.client.renderer.entity.Render;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public abstract class Mixin_FixNametagRotation {
     @ModifyArg(method = "renderLivingLabel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;rotate(FFFF)V", ordinal = 1), index = 0)
     private float polynametag$fixNametagRotation(float angle) {
-        if (PolyNametagConfig.isEnabled()) {
+        if (PolyNametagConfig.isEnabled() && OmniPerspective.getCurrentPerspective() == OmniPerspective.THIRD_PERSON_FRONT) {
             angle *= -1.0F;
         }
 
