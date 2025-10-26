@@ -18,6 +18,7 @@ object NametagRenderer {
         OmniRenderPipelines.POSITION_COLOR_TRIANGLES
             .newBuilder()
             .setDepthTest(OmniRenderPipeline.DepthTest.DISABLED)
+            .setDepthMask(false)
             .build()
     }
 
