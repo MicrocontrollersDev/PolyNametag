@@ -39,7 +39,6 @@ public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity, S exten
         if (PolyNametagConfig.isEnabled()) {
             // TODO/FIX
             OmniMatrixStack matrixStack = OmniMatrixStacks.create();
-            matrixStack.getVanilla().multiplyPositionMatrix(labelCommand.matricesEntry());
             NametagRenderer.drawBackground(matrixStack, text);
         } else {
             original.call(

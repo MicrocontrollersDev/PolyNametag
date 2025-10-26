@@ -41,7 +41,6 @@ public abstract class Mixin_ReplaceTextRendering<T extends Entity, S extends Ent
         if (PolyNametagConfig.isEnabled()) {
             // TODO/FIX
             OmniMatrixStack matrixStack = OmniMatrixStacks.create();
-            matrixStack.getVanilla().multiplyPositionMatrix(labelCommand.matricesEntry());
             NametagRenderer.drawNametagString(matrixStack, text.getString(), x, y, new OmniColor(ColorFormat.ARGB, color));
         } else {
             original.call(
