@@ -3,41 +3,41 @@ package org.polyfrost.polynametag.mixin.client;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
-import dev.deftu.omnicore.api.color.ColorFormat;
-import dev.deftu.omnicore.api.color.OmniColor;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.Matrix4f;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(EntityRenderer.class)
-public abstract class Mixin_ReplaceTextRendering<T extends Entity> {
-    @WrapOperation(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZII)I"))
-    private int polynametag$renderCustomText(
-            Font instance,
-            Component text,
+@Mixin(value = EntityRenderer.class, priority = 999)
+public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
+    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I", ordinal = 0))
+    private int polynametag$renderCustomBackground(
+            TextRenderer instance,
+            Text text,
             float x,
             float y,
             int color,
             boolean shadow,
             Matrix4f matrix4f,
-            MultiBufferSource multiBufferSource,
+            VertexConsumerProvider vertexConsumerProvider,
             boolean unknownArgument,
             int backgroundColor,
             int light,
             Operation<Integer> original,
-            @Local(argsOnly = true) PoseStack poseStack
+            @Local(argsOnly = true) MatrixStack matrixStack,
+            @Local(argsOnly = true) Entity entity
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            return NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(poseStack), text.getString(), x, y, new OmniColor(ColorFormat.ARGB, color));
+            NametagRenderer.drawBackground(OmniMatrixStacks.vanilla(matrixStack), entity);
+            return 0;
         } else {
             return original.call(
                     instance,
@@ -47,7 +47,7 @@ public abstract class Mixin_ReplaceTextRendering<T extends Entity> {
                     color,
                     shadow,
                     matrix4f,
-                    multiBufferSource,
+                    vertexConsumerProvider,
                     unknownArgument,
                     backgroundColor,
                     light
