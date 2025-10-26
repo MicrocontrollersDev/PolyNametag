@@ -62,7 +62,7 @@ object PolyNametagConfig :
     var backgroundColor = rgba(0, 0, 0, 0.247F) // 0,0,0,63
 
     @Color(title = "Text color", description = "The color of the text")
-    var textColor = rgba(0, 0, 0, 1.0F)
+    var textColor = rgba(1, 1, 1, 1.0F)
 
     private var hasMigratedPatcher = false
 
