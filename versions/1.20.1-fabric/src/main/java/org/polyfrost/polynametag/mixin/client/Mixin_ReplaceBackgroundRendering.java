@@ -16,8 +16,8 @@ import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(value = EntityRenderer.class, priority = 999)
-public abstract class Mixin_ReplaceBackgroundRendering<T extends Entity> {
+@Mixin(EntityRenderer.class)
+public abstract class Mixin_ReplaceBackgroundRendering {
     @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I", ordinal = 0))
     private int polynametag$renderCustomBackground(
             TextRenderer instance,

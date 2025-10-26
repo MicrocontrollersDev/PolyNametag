@@ -9,8 +9,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.command.LabelCommandRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 import org.polyfrost.polynametag.LabelCommandMatrix;
@@ -20,7 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(LabelCommandRenderer.class)
-public abstract class Mixin_ReplaceTextRendering<T extends Entity, S extends EntityRenderState> {
+public abstract class Mixin_ReplaceTextRendering {
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)V", ordinal = 1))
     private void polynametag$renderCustomText(
             TextRenderer instance,
