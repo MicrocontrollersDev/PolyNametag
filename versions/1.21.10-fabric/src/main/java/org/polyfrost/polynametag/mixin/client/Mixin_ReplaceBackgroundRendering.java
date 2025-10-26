@@ -9,7 +9,7 @@ import net.minecraft.client.render.command.LabelCommandRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
-import org.polyfrost.polynametag.LabelCommandMatrix;
+import org.polyfrost.polynametag.LabelCommandStorage;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +34,7 @@ public abstract class Mixin_ReplaceBackgroundRendering {
             @Local OrderedRenderCommandQueueImpl.LabelCommand labelCommand
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            NametagRenderer.drawBackground(((LabelCommandMatrix) (Object) labelCommand).polynametag$getMatrixStack(), text);
+            NametagRenderer.drawBackground(((LabelCommandStorage) (Object) labelCommand).polynametag$getMatrixStack(), text);
         } else {
             original.call(
                     instance,

@@ -11,7 +11,7 @@ import net.minecraft.client.render.command.LabelCommandRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
-import org.polyfrost.polynametag.LabelCommandMatrix;
+import org.polyfrost.polynametag.LabelCommandStorage;
 import org.polyfrost.polynametag.client.NametagRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +25,7 @@ public abstract class Mixin_ReplaceTextRendering {
             Text text,
             float x,
             float y,
-            int color,
+            int inColor,
             boolean shadow,
             Matrix4f matrix4f,
             VertexConsumerProvider vertexConsumerProvider,
@@ -36,14 +36,16 @@ public abstract class Mixin_ReplaceTextRendering {
             @Local OrderedRenderCommandQueueImpl.LabelCommand labelCommand
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            NametagRenderer.drawNametagString(((LabelCommandMatrix) (Object) labelCommand).polynametag$getMatrixStack(), text.getString(), x, y, new OmniColor(ColorFormat.ARGB, color));
+            LabelCommandStorage labelCommandStorage = (LabelCommandStorage) (Object) labelCommand;
+            final OmniColor color = new OmniColor(ColorFormat.ARGB, inColor).withAlpha(labelCommandStorage.polynametag$isSneaking() ? 32 : 255);
+            NametagRenderer.drawNametagString(labelCommandStorage.polynametag$getMatrixStack(), text.getString(), x, y, color);
         } else {
             original.call(
                     instance,
                     text,
                     x,
                     y,
-                    color,
+                    inColor,
                     shadow,
                     matrix4f,
                     vertexConsumerProvider,

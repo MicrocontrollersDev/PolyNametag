@@ -10,6 +10,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 import org.polyfrost.polynametag.client.NametagRenderer;
@@ -25,7 +26,7 @@ public abstract class Mixin_ReplaceTextRendering {
             Text text,
             float x,
             float y,
-            int color,
+            int inColor,
             boolean shadow,
             Matrix4f matrix4f,
             VertexConsumerProvider vertexConsumerProvider,
@@ -33,17 +34,19 @@ public abstract class Mixin_ReplaceTextRendering {
             int backgroundColor,
             int light,
             Operation<Integer> original,
-            @Local(argsOnly = true) MatrixStack matrixStack
+            @Local(argsOnly = true) MatrixStack matrixStack,
+            @Local(argsOnly = true) Entity entity
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            return NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrixStack), text.getString(), x, y, new OmniColor(ColorFormat.ARGB, color));
+            final OmniColor color = new OmniColor(ColorFormat.ARGB, inColor).withAlpha(entity.isSneaking() ? 32 : 255);
+            return NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrixStack), text.getString(), x, y, color);
         } else {
             return original.call(
                     instance,
                     text,
                     x,
                     y,
-                    color,
+                    inColor,
                     shadow,
                     matrix4f,
                     vertexConsumerProvider,
@@ -51,6 +54,15 @@ public abstract class Mixin_ReplaceTextRendering {
                     backgroundColor,
                     light
             );
+        }
+    }
+
+    @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isSneaky()Z"))
+    private boolean polynametag$renderCustomTextWhilstSneaking(Entity instance, Operation<Boolean> original) {
+        if (PolyNametagConfig.isEnabled()) {
+            return false;
+        } else {
+            return original.call(instance);
         }
     }
 }
