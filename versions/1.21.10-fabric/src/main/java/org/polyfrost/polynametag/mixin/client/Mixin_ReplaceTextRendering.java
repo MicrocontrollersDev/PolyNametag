@@ -37,7 +37,7 @@ public abstract class Mixin_ReplaceTextRendering {
     ) {
         if (PolyNametagConfig.isEnabled()) {
             LabelCommandStorage labelCommandStorage = (LabelCommandStorage) (Object) labelCommand;
-            final OmniColor color = new OmniColor(ColorFormat.ARGB, inColor).withAlpha(labelCommandStorage.polynametag$isSneaking() ? 32 : 255);
+            final OmniColor color = new OmniColor(ColorFormat.ARGB, PolyNametagConfig.INSTANCE.getTextColor().getArgb()).withAlpha(labelCommandStorage.polynametag$isSneaking() ? 32 : 255);
             NametagRenderer.drawNametagString(labelCommandStorage.polynametag$getMatrixStack(), text.getString(), x, y, color);
         } else {
             original.call(

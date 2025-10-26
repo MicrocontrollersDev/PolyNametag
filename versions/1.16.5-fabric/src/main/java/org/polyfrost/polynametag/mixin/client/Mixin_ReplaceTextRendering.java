@@ -25,7 +25,7 @@ public abstract class Mixin_ReplaceTextRendering {
             Text text,
             float x,
             float y,
-            int color,
+            int inColor,
             boolean shadow,
             Matrix4f matrix4f,
             VertexConsumerProvider vertexConsumerProvider,
@@ -36,14 +36,15 @@ public abstract class Mixin_ReplaceTextRendering {
             @Local(argsOnly = true) MatrixStack matrixStack
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            return NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrixStack), text.getString(), x, y, new OmniColor(ColorFormat.ARGB, color));
+            final OmniColor color = new OmniColor(ColorFormat.ARGB, PolyNametagConfig.INSTANCE.getTextColor().getArgb());
+            return NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrixStack), text.getString(), x, y, color);
         } else {
             return original.call(
                     instance,
                     text,
                     x,
                     y,
-                    color,
+                    inColor,
                     shadow,
                     matrix4f,
                     vertexConsumerProvider,

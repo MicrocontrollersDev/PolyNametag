@@ -4,8 +4,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks;
+import dev.deftu.omnicore.api.color.ColorFormat;
 import dev.deftu.omnicore.api.color.OmniColor;
-import dev.deftu.omnicore.api.color.OmniColors;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
@@ -32,7 +32,7 @@ public abstract class Mixin_ReplaceTextRendering<T extends Entity> {
             @Local(argsOnly = true) Entity entity
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            final OmniColor color = OmniColors.WHITE.withAlpha(entity.isSneaking() ? 32 : 255);
+            final OmniColor color = new OmniColor(ColorFormat.ARGB, PolyNametagConfig.INSTANCE.getTextColor().getArgb()).withAlpha(entity.isSneaking() ? 32 : 255);
             NametagRenderer.drawNametagString(OmniMatrixStacks.create(), text, x, y, color);
         } else {
             original.call(

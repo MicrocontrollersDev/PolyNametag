@@ -38,7 +38,7 @@ public abstract class Mixin_ReplaceTextRendering {
             @Local(argsOnly = true) Entity entity
     ) {
         if (PolyNametagConfig.isEnabled()) {
-            final OmniColor color = new OmniColor(ColorFormat.ARGB, inColor).withAlpha(entity.isSneaking() ? 32 : 255);
+            final OmniColor color = new OmniColor(ColorFormat.ARGB, PolyNametagConfig.INSTANCE.getTextColor().getArgb()).withAlpha(entity.isSneaking() ? 32 : 255);
             return NametagRenderer.drawNametagString(OmniMatrixStacks.vanilla(matrixStack), text.getString(), x, y, color);
         } else {
             return original.call(

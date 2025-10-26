@@ -17,7 +17,7 @@ object NametagRenderer {
     private val PIPELINE by lazy {
         OmniRenderPipelines.POSITION_COLOR_TRIANGLES
             .newBuilder()
-            .setDepthTest(OmniRenderPipeline.DepthTest.DISABLED)
+            .setDepthTest(OmniRenderPipeline.DepthTest.LESS)
             .setDepthMask(false)
             .build()
     }
