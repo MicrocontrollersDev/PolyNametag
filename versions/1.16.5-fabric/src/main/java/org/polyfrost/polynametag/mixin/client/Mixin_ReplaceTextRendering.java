@@ -29,7 +29,7 @@ public abstract class Mixin_ReplaceTextRendering {
             boolean shadow,
             Matrix4f matrix4f,
             VertexConsumerProvider vertexConsumerProvider,
-            boolean unknownArgument,
+            boolean seeThrough,
             int backgroundColor,
             int light,
             Operation<Integer> original,
@@ -48,7 +48,7 @@ public abstract class Mixin_ReplaceTextRendering {
                     shadow,
                     matrix4f,
                     vertexConsumerProvider,
-                    unknownArgument,
+                    seeThrough,
                     backgroundColor,
                     light
             );
