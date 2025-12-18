@@ -92,7 +92,11 @@ object NametagRenderer {
     //$$ @JvmStatic
     //$$ fun drawBackground(
     //$$     matrices: OmniMatrixStack,
+    //#if MC >=1.21.4
+    //$$     displayName: net.minecraft.network.chat.Component?,
+    //#else
     //$$     displayName: net.minecraft.text.Text?,
+    //#endif
     //$$ ) {
     //$$     val displayName = displayName ?: return
     //$$     val halfWidth = OmniTextRenderer.width(displayName.string) / 2 + 1.0
