@@ -1,22 +1,21 @@
 package org.polyfrost.polynametag.mixin.client;
 
-import com.llamalad7.mixinextras.sugar.Local;
 //? if <= 1.21.8
-import net.minecraft.client.renderer.entity.EntityRenderer;
+/*import net.minecraft.client.renderer.entity.EntityRenderer;*/
 //? if >= 1.21.10
-/*import net.minecraft.client.renderer.feature.NameTagFeatureRenderer;*/
+import net.minecraft.client.renderer.feature.NameTagFeatureRenderer;
 import org.polyfrost.polynametag.client.PolyNametagConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 //? if >= 1.21.10 {
-/*@Mixin(NameTagFeatureRenderer.class)
-*///?} else {
-@Mixin(EntityRenderer.class)
-//?}
+@Mixin(NameTagFeatureRenderer.class)
+//?} else {
+/*@Mixin(EntityRenderer.class)
+*///?}
 public abstract class Mixin_OffsetRendering {
-    @ModifyArg(method = /*? if >= 1.21.10 {*/ /*"render" *//*?} else {*/ "renderNameTag" /*?}*/, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)V"), index = 2)
+    @ModifyArg(method = /*? if >= 1.21.10 {*/ "render" /*?} else {*/ /*"renderNameTag" *//*?}*/, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)V"), index = 2)
     private float modifyTranslateY(float original) {
         if (PolyNametagConfig.isEnabled()) {
             original -= PolyNametagConfig.getHeightOffset();

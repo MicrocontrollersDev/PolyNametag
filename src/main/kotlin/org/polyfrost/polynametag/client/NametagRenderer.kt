@@ -102,14 +102,16 @@ object NametagRenderer {
     ): Int {
         return matrices.with {
             matrices.translate(0.0F, 0.0F, -0.01F)
-            OmniTextRenderer.render(
-                matrices, text, x, y, color, when (PolyNametagConfig.textType) {
+            val render = OmniTextRenderer.render(
+                matrices, text/*? if >=1.21.10 {*/.string /*?}*/, x, y, color, // TODO: make it not a string!
+                when (PolyNametagConfig.textType) {
                     0 -> TextShadowType.None
                     1 -> TextShadowType.Drop
                     2 -> TextShadowType.Outline(OmniColors.BLACK.withAlpha(color.alpha))
                     else -> throw IllegalStateException("Unexpected value: ${PolyNametagConfig.textType}")
                 }
             )
+            render
         }
     }
 }
