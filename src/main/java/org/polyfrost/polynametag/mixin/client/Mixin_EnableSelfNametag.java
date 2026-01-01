@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(LivingEntityRenderer.class)
 public abstract class Mixin_EnableSelfNametag<T extends LivingEntity> {
-    @ModifyReturnValue(method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;D)Z", at = @At("RETURN"))
+    @ModifyReturnValue(method = /*? if >=1.21.8 {*/ "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;D)Z" /*?} else {*/ /*"shouldShowName(Lnet/minecraft/world/entity/LivingEntity;)Z" *//*?}*/, at = @At("RETURN"))
     private boolean enableSelfNametag(boolean original, T livingEntity) {
         if (PolyNametagConfig.isEnabled() && PolyNametagConfig.isShowOwnNametag() && livingEntity == OmniClient.getPlayer()) {
             return true;

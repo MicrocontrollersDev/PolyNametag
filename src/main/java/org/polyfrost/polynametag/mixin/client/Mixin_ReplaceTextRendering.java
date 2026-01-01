@@ -27,8 +27,8 @@ import org.spongepowered.asm.mixin.injection.At;
 /*@Mixin(EntityRenderer.class)
 *///?}
 public abstract class Mixin_ReplaceTextRendering {
-    @WrapOperation(method = /*? if >= 1.21.10 {*/ "render" /*?} else {*/ /*"renderNameTag" *//*?}*/, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)V", ordinal = 1))
-    private void replaceText(Font instance, Component component, float x, float y, int color, boolean shadow, Matrix4f matrix4f, MultiBufferSource multiBufferSource, Font.DisplayMode displayMode, int backgroundColor, int packedLight, Operation<Void> original /*? if <= 1.21.8 {*//*, @Local(argsOnly = true) PoseStack pose *//*?}*/) {
+    @WrapOperation(method = /*? if >= 1.21.10 {*/ "render" /*?} else {*/ /*"renderNameTag" *//*?}*/, at = @At(value = "INVOKE", target = /*? if >=1.21.8 {*/ "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)V" /*?} else {*/ /*"Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)I" *//*?}*/, ordinal = 1))
+    private /*? if >= 1.21.8 {*/ void /*?} else {*/ /*int *//*?}*/ replaceText(Font instance, Component component, float x, float y, int color, boolean shadow, Matrix4f matrix4f, MultiBufferSource multiBufferSource, Font.DisplayMode displayMode, int backgroundColor, int packedLight, Operation</*? if >= 1.21.8 {*/ Void/*?} else {*//*Integer*//*?}*/> original /*? if <= 1.21.8 {*//*, @Local(argsOnly = true) PoseStack pose *//*?}*/) {
         if (PolyNametagConfig.isEnabled()) {
             //? if >= 1.21.10 {
             PoseStack pose = new PoseStack();
@@ -38,7 +38,11 @@ public abstract class Mixin_ReplaceTextRendering {
             NametagRenderer.drawNametagString(OmniPoseStacks.vanilla(pose), component, x, y, new OmniColor(ColorFormat.ARGB, color));
             //? if >= 1.21.10
             pose.popPose();
+            //? if 1.21.1
+            /*return 0;*/
         } else {
+            //? if 1.21.1
+            /*return*/
             original.call(instance, component, x, y, color, shadow, matrix4f, multiBufferSource, displayMode, backgroundColor, packedLight);
         }
     }

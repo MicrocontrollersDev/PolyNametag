@@ -103,7 +103,7 @@ object NametagRenderer {
         return matrices.with {
             matrices.translate(0.0F, 0.0F, -0.01F)
             val render = OmniTextRenderer.render(
-                matrices, text/*? if >=1.21.10 {*/.string /*?}*/, x, y, color, // TODO: make it not a string!
+                matrices, text/*? if !=1.21.8 {*/.string /*?}*/, x, y, color, // TODO: make it not a string!
                 when (PolyNametagConfig.textType) {
                     0 -> TextShadowType.None
                     1 -> TextShadowType.Drop
