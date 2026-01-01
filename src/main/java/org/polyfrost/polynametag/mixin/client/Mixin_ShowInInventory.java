@@ -2,8 +2,6 @@ package org.polyfrost.polynametag.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-//? if >= 1.21.8
-import com.llamalad7.mixinextras.sugar.Local;
 import dev.deftu.omnicore.api.client.OmniClient;
 import dev.deftu.omnicore.api.client.screen.OmniScreens;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -15,10 +13,10 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 //? if >= 1.21.8
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-//? if 1.21.8 {
-/*import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.world.entity.Entity;
-*///?}
+//? if 1.21.8
+/*import net.minecraft.client.renderer.entity.state.PlayerRenderState;*/
+//? if 1.21.1
+/*import net.minecraft.world.entity.Entity;*/
 //? if >= 1.21.8 {
 import net.minecraft.world.phys.Vec3;
 import org.objectweb.asm.Opcodes;
@@ -32,12 +30,12 @@ public abstract class Mixin_ShowInInventory /*? if >= 1.21.8 {*/ <S extends Enti
     // TODO: broken on 1.21.10
     //? if >= 1.21.8 {
     @WrapOperation(method = /*? if >= 1.21.10 {*/ "submitNameTag" /*?} else {*/ /*"renderNameTag" *//*?}*/, at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/state/EntityRenderState;nameTagAttachment:Lnet/minecraft/world/phys/Vec3;", opcode = Opcodes.GETFIELD))
-    private Vec3 hideNametagInInventory(EntityRenderState instance, Operation<Vec3> original, @Local(argsOnly = true) S arg) {
+    private Vec3 hideNametagInInventory(S instance, Operation<Vec3> original) {
         if (PolyNametagConfig.isEnabled() &&
                 !PolyNametagConfig.isShowInInventory() &&
                 (OmniScreens.getCurrentScreen() instanceof InventoryScreen ||
                 OmniScreens.getCurrentScreen() instanceof CreativeModeInventoryScreen) &&
-                arg instanceof /*? if >= 1.21.10 {*/ AvatarRenderState /*?} else {*/ /*PlayerRenderState *//*?}*/ playerRenderState &&
+                instance instanceof /*? if >= 1.21.10 {*/ AvatarRenderState /*?} else {*/ /*PlayerRenderState *//*?}*/ playerRenderState &&
                 playerRenderState.id == OmniClient.getPlayer().getId()) {
             return null;
         } else {
