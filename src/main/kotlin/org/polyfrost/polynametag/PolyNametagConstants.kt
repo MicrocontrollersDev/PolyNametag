@@ -2,10 +2,7 @@ package org.polyfrost.polynametag
 
 object PolyNametagConstants {
     // Sets the variables from `gradle.properties`. Depends on the `bloom` DGT plugin.
-//    const val ID = "@MOD_ID@"
-//    const val NAME = "@MOD_NAME@"
-//    const val VERSION = "@MOD_VERSION@"
-    const val ID = "polynametag"
-    const val NAME = "PolyNametag"
-    const val VERSION = "1.1.0-alpha.1"
+    const val ID = "@MOD_ID@"
+    const val NAME = "@MOD_NAME@"
+    const val VERSION = "@MOD_VERSION@"
 }
